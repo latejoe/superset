@@ -72,12 +72,16 @@ import * as server from '../src/index';
 import { statsd } from '../src/index';
 
 describe('server', () => {
-  let statsdIncrementMock: jest.SpiedFunction<(stat: string, tags?: Record<string, string>) => void>;
+  let statsdIncrementMock: jest.SpiedFunction<
+    (stat: string, tags?: Record<string, string>) => void
+  >;
 
   beforeEach(() => {
     mockRedisXrange.mockClear();
     server.resetState();
-    statsdIncrementMock = jest.spyOn(statsd, 'increment').mockReturnValue() as unknown as typeof statsdIncrementMock;
+    statsdIncrementMock = jest
+      .spyOn(statsd, 'increment')
+      .mockReturnValue() as unknown as typeof statsdIncrementMock;
   });
 
   afterEach(() => {
@@ -280,7 +284,9 @@ describe('server', () => {
 
     test('error sending data to client', async () => {
       const ws = new wsMock('localhost');
-      const sendMock = (jest.spyOn(ws, 'send') as unknown as MockedSend).mockImplementation(() => {
+      const sendMock = (
+        jest.spyOn(ws, 'send') as unknown as MockedSend
+      ).mockImplementation(() => {
         throw new Error();
       });
       const cleanChannelMock = jest.spyOn(server, 'cleanChannel');
