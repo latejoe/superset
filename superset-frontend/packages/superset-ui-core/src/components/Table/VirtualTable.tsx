@@ -24,7 +24,7 @@ import {
 } from 'antd/es/table';
 import classNames from 'classnames';
 import { useResizeDetector } from 'react-resize-detector';
-import { useRef, useState, useCallback, CSSProperties } from 'react';
+import React, { useRef, useState, useCallback, CSSProperties } from 'react';
 import { Grid, type GridImperativeAPI } from 'react-window';
 import { safeHtmlSpan } from '@superset-ui/core';
 import { useTheme, styled } from '@apache-superset/core/theme';
@@ -195,7 +195,7 @@ const VirtualTable = <RecordType extends object>(
       ];
     const render = mergedColumns[columnIndex]?.render;
     if (typeof render === 'function') {
-      content = render(content, data, rowIndex);
+      content = render(content, data as RecordType, rowIndex);
     }
 
     if (allowHTML && typeof content === 'string') {
@@ -219,16 +219,13 @@ const VirtualTable = <RecordType extends object>(
     );
   };
 
-  const renderVirtualList = (
-    rawData: readonly object[],
-    {
-      ref: bodyRef,
-      onScroll,
-    }: {
+  const renderVirtualList: (
+    rawData: readonly RecordType[],
+    info: {
       ref: React.MutableRefObject<unknown>;
       onScroll: (info: { scrollLeft: number }) => void;
     },
-  ) => {
+  ) => React.ReactNode = (rawData, { ref: bodyRef, onScroll }) => {
     // eslint-disable-next-line no-param-reassign
     bodyRef.current = connectObject;
     const cellSize = size === TableSize.Middle ? MIDDLE : SMALL;
