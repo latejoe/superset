@@ -65,10 +65,13 @@ export default class FixJSDOMEnvironment extends JSDOMEnvironment {
     this.global.AbortController = AbortController;
     this.global.ReadableStream = ReadableStream;
 
-    // Provide a synchronous MessageChannel stub so rc-component packages
+    // Provide an async MessageChannel stub so rc-component packages
     // (overflow, select, form) work in Jest without hanging.
     // antd v6 rc-* components call new MessageChannel() unconditionally;
     // the old workaround of setting it to undefined no longer works.
+    // The callback must fire asynchronously (like real MessageChannel)
+    // so that rc-component/overflow's batcher accumulates all updates
+    // before flushing.
     this.global.MessageChannel = class {
       port1: any;
       port2: any;
@@ -76,9 +79,11 @@ export default class FixJSDOMEnvironment extends JSDOMEnvironment {
         this.port1 = { onmessage: null, close() {} };
         this.port2 = {
           postMessage: () => {
-            if (this.port1.onmessage) {
-              this.port1.onmessage({ data: undefined } as any);
-            }
+            Promise.resolve().then(() => {
+              if (this.port1.onmessage) {
+                this.port1.onmessage({ data: undefined } as any);
+              }
+            });
           },
           close() {},
         };
