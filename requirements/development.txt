@@ -926,9 +926,8 @@ selenium==4.44.0
     #   apache-superset
 semver==3.0.4
     # via apache-superset-extensions-cli
-setuptools==80.9.0
+setuptools==82.0.1
     # via
-    #   -c requirements/base-constraint.txt
     #   nodeenv
     #   pandas-gbq
     #   pydata-google-auth
