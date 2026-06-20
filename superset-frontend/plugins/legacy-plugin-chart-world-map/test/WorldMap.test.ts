@@ -21,7 +21,12 @@ import { getNumberFormatter, ValueFormatter } from '@superset-ui/core';
 import WorldMap from '../src/WorldMap';
 import { ColorBy } from '../src/utils';
 
-const mockSelect = jest.fn();
+const actualD3Selection = jest.requireActual('d3-selection');
+const mockSelect = jest
+  .fn()
+  .mockImplementation((...args: unknown[]) =>
+    actualD3Selection.select(...args),
+  );
 jest.mock('d3-selection', () => ({
   ...jest.requireActual('d3-selection'),
   select: (...args: unknown[]) => mockSelect(...args),
