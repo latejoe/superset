@@ -405,10 +405,10 @@ AUTH_PASSWORD_COMMON_BLOCKLIST: list[str] = []
 # GLOBALS FOR APP Builder
 # ------------------------------
 # Uncomment to setup Your App name
-APP_NAME = "Superset"
+APP_NAME = "ACME Analytics"
 
 # Specify the App icon
-APP_ICON = "/static/assets/images/superset-logo-horiz.png"
+APP_ICON = "/static/assets/images/acme-logo-horiz.png"
 
 # Specify where clicking the logo would take the user'
 # Default value of None will take you to '/superset/welcome'
@@ -417,7 +417,7 @@ APP_ICON = "/static/assets/images/superset-logo-horiz.png"
 LOGO_TARGET_PATH = None
 
 # Specify tooltip that should appear when hovering over the App Icon/Logo
-LOGO_TOOLTIP = ""
+LOGO_TOOLTIP = "ACME Analytics"
 
 # Specify any text that should appear to the right of the logo
 LOGO_RIGHT_TEXT: Callable[[], str] | str = ""
@@ -1005,21 +1005,21 @@ THEME_DEFAULT: Theme = {
         # Brand
         # Application name for window titles
         "brandAppName": APP_NAME,
-        "brandLogoAlt": "Apache Superset",
+        "brandLogoAlt": "ACME Analytics",
         "brandLogoUrl": APP_ICON,
-        "brandLogoMargin": "18px 0",
+        "brandLogoMargin": "12px 0",
         "brandLogoHref": "/",
-        "brandLogoHeight": "24px",
+        "brandLogoHeight": "28px",
         # Spinner
         "brandSpinnerUrl": None,
         "brandSpinnerSvg": None,
         # Default colors
-        "colorPrimary": "#2893B3",  # NOTE: previous lighter primary color was #20a7c9 # noqa: E501
-        "colorLink": "#2893B3",
-        "colorError": "#e04355",
-        "colorWarning": "#fcc700",
-        "colorSuccess": "#5ac189",
-        "colorInfo": "#66bcfe",
+        "colorPrimary": "#0F172A",
+        "colorLink": "#0EA5E9",
+        "colorError": "#EF4444",
+        "colorWarning": "#F59E0B",
+        "colorSuccess": "#10B981",
+        "colorInfo": "#06B6D4",
         # Fonts
         "fontUrls": [],
         "fontFamily": "Inter, Helvetica, Arial, sans-serif",

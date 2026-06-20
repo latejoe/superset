@@ -25,6 +25,7 @@ import {
   Card,
   Flex,
   Form,
+  Image,
   Input,
   Typography,
   Icons,
@@ -60,16 +61,80 @@ enum AuthType {
   AuthSAML = 5,
 }
 
+const StyledLoginWrapper = styled(Flex)`
+  ${({ theme }) => css`
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(
+      135deg,
+      ${theme.colorPrimary} 0%,
+      ${theme.colorPrimaryBg} 50%,
+      ${theme.colorPrimary} 100%
+    );
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        ${theme.colorInfoBgHover} 0%,
+        transparent 70%
+      );
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        ${theme.colorInfoBg} 0%,
+        transparent 70%
+      );
+    }
+  `}
+`;
+
 const StyledCard = styled(Card)`
   ${({ theme }) => css`
-    max-width: 400px;
+    max-width: 420px;
     width: 100%;
-    margin-top: ${theme.marginXL}px;
-    color: ${theme.colorBgContainer};
-    background: ${theme.colorBgBase};
+    border-radius: ${theme.borderRadiusLG}px;
+    border: 1px solid ${theme.colorBorderSecondary};
+    background: ${theme.colorBgContainer};
+    backdrop-filter: blur(20px);
+    box-shadow: 0 25px 50px -12px ${theme.colorFillQuaternary};
+    z-index: 1;
     .ant-form-item-label label {
       color: ${theme.colorPrimary};
     }
+  `}
+`;
+
+const StyledLogoContainer = styled(Flex)`
+  z-index: 1;
+  margin-bottom: 32px;
+`;
+
+const StyledTagline = styled(Typography.Text)`
+  ${({ theme }) => css`
+    color: ${theme.colorTextLightSolid};
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 12px;
+    opacity: 0.7;
   `}
 `;
 
@@ -153,15 +218,24 @@ export default function Login() {
   };
 
   return (
-    <Flex
+    <StyledLoginWrapper
       justify="center"
       align="center"
+      vertical
       data-test="login-form"
-      css={css`
-        width: 100%;
-        height: calc(100vh - 200px);
-      `}
     >
+      <StyledLogoContainer align="center" vertical>
+        <Image
+          preview={false}
+          src="/static/assets/branding/acme-logo-horiz.svg"
+          alt={t('ACME Analytics')}
+          height={48}
+          css={css`
+            filter: brightness(0) invert(1);
+          `}
+        />
+        <StyledTagline>{t('Data-Driven Decisions')}</StyledTagline>
+      </StyledLogoContainer>
       <StyledCard title={t('Sign in')} padded>
         {authType === AuthType.AuthOID && (
           <Flex justify="center" vertical gap="middle">
@@ -268,6 +342,6 @@ export default function Login() {
           </Flex>
         )}
       </StyledCard>
-    </Flex>
+    </StyledLoginWrapper>
   );
 }
