@@ -207,8 +207,7 @@ const VirtualTable = <RecordType extends object>(
     return (
       <StyledCell
         className={classNames('virtual-table-cell', {
-          'virtual-table-cell-last':
-            columnIndex === mergedColumns.length - 1,
+          'virtual-table-cell-last': columnIndex === mergedColumns.length - 1,
         })}
         style={style}
         title={typeof content === 'string' ? content : undefined}
@@ -222,7 +221,13 @@ const VirtualTable = <RecordType extends object>(
 
   const renderVirtualList = (
     rawData: readonly object[],
-    { ref: bodyRef, onScroll }: { ref: React.MutableRefObject<unknown>; onScroll: (info: { scrollLeft: number }) => void },
+    {
+      ref: bodyRef,
+      onScroll,
+    }: {
+      ref: React.MutableRefObject<unknown>;
+      onScroll: (info: { scrollLeft: number }) => void;
+    },
   ) => {
     // eslint-disable-next-line no-param-reassign
     bodyRef.current = connectObject;
