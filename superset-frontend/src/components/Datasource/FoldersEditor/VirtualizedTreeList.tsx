@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { VariableSizeList as List } from 'react-window';
+import { useCallback, useMemo, useRef } from 'react';
+import { List, type ListImperativeAPI } from 'react-window';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import type { Metric, ColumnMeta } from '@superset-ui/chart-controls';
 import { FoldersEditorItemType } from '../types';
@@ -82,7 +82,7 @@ export function VirtualizedTreeList({
   onStartEdit,
   onFinishEdit,
 }: VirtualizedTreeListProps) {
-  const listRef = useRef<List>(null);
+  const listRef = useRef<ListImperativeAPI>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Custom auto-scroll during drag (replaces dnd-kit's auto-scroll which conflicts with virtualization)
@@ -92,21 +92,6 @@ export function VirtualizedTreeList({
     isDragging,
     listHeight: height,
   });
-
-  // Reset list cache when items structure changes, but not during drag
-  // Resetting during drag causes jumping/flickering
-  useEffect(() => {
-    if (!isDragging) {
-      listRef.current?.resetAfterIndex(0);
-    }
-  }, [
-    flattenedItems,
-    collapsedIds,
-    folderChildCounts,
-    itemSeparatorInfo,
-    visibleItemIds,
-    isDragging,
-  ]);
 
   // Calculate item size for react-window
   const getItemSize = useCallback(
@@ -218,16 +203,14 @@ export function VirtualizedTreeList({
   return (
     <div ref={containerRef} style={{ width, height, position: 'relative' }}>
       <List
-        ref={listRef}
-        width={width}
-        height={height}
-        itemCount={flattenedItems.length}
-        itemSize={getItemSize}
-        itemData={itemData}
+        listRef={listRef}
+        style={{ width, height }}
+        rowCount={flattenedItems.length}
+        rowHeight={getItemSize}
+        rowProps={itemData}
         overscanCount={overscanCount}
-      >
-        {VirtualizedTreeItem}
-      </List>
+        rowComponent={VirtualizedTreeItem}
+      />
     </div>
   );
 }

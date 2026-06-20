@@ -29,12 +29,14 @@ import {
 } from 'spec/helpers/extensionTestHelpers';
 import TableExploreTree from '.';
 
-jest.mock(
-  'react-virtualized-auto-sizer',
-  () =>
-    ({ children }: { children: (params: { height: number }) => ReactChild }) =>
-      children({ height: 500 }),
-);
+jest.mock('react-virtualized-auto-sizer', () => ({
+  __esModule: true,
+  default: ({
+    renderProp,
+  }: {
+    renderProp: (params: { height: number; width: number }) => ReactChild;
+  }) => renderProp({ height: 500, width: 400 }),
+}));
 
 const mockedQueryEditorId = defaultQueryEditor.id;
 const mockedDatabase = {

@@ -19,7 +19,7 @@
 /* eslint-env browser */
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeList as List } from 'react-window';
+import { List } from 'react-window';
 // @ts-expect-error
 import { createFilter } from 'react-search-input';
 import { t } from '@apache-superset/core/translation';
@@ -438,19 +438,24 @@ function SliceAdder({
       {isLoading && <Loading />}
       {!isLoading && filteredSlices.length > 0 && (
         <ChartList>
-          <AutoSizer>
-            {({ height, width }: { height: number; width: number }) => (
-              <List
-                width={width}
-                height={height}
-                itemCount={filteredSlices.length}
-                itemSize={DEFAULT_CELL_HEIGHT}
-                itemKey={index => filteredSlices[index].slice_id}
-              >
-                {rowRenderer}
-              </List>
-            )}
-          </AutoSizer>
+          <AutoSizer
+            renderProp={({
+              height,
+              width,
+            }: {
+              height?: number;
+              width?: number;
+            }) =>
+              height != null && width != null ? (
+                <List
+                  style={{ width, height }}
+                  rowCount={filteredSlices.length}
+                  rowHeight={DEFAULT_CELL_HEIGHT}
+                  rowComponent={rowRenderer}
+                />
+              ) : null
+            }
+          />
         </ChartList>
       )}
       {errorMessage && (

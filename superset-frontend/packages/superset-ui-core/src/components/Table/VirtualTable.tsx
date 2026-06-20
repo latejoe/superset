@@ -24,8 +24,8 @@ import {
 } from 'antd/es/table';
 import classNames from 'classnames';
 import { useResizeDetector } from 'react-resize-detector';
-import { useEffect, useRef, useState, useCallback, CSSProperties } from 'react';
-import { VariableSizeGrid as Grid } from 'react-window';
+import React, { useRef, useState, useCallback, CSSProperties } from 'react';
+import { Grid, type GridImperativeAPI } from 'react-window';
 import { safeHtmlSpan } from '@superset-ui/core';
 import { useTheme, styled } from '@apache-superset/core/theme';
 
@@ -126,34 +126,21 @@ const VirtualTable = <RecordType extends object>(
       (lastColumn.width as number) + Math.floor(tableWidth - totalWidth);
   }
 
-  const gridRef = useRef<any>();
-  const [connectObject] = useState<any>(() => {
+  const gridRef = useRef<GridImperativeAPI>(null);
+  const [connectObject] = useState(() => {
     const obj = {};
     Object.defineProperty(obj, 'scrollLeft', {
-      get: () => {
-        if (gridRef.current) {
-          return gridRef.current?.state?.scrollLeft;
-        }
-        return 0;
-      },
+      get: () => gridRef.current?.element?.scrollLeft ?? 0,
       set: (scrollLeft: number) => {
-        if (gridRef.current) {
-          gridRef.current.scrollTo({ scrollLeft });
+        const el = gridRef.current?.element;
+        if (el) {
+          el.scrollLeft = scrollLeft;
         }
       },
     });
 
     return obj;
   });
-
-  const resetVirtualGrid = () => {
-    gridRef.current?.resetAfterIndices({
-      columnIndex: 0,
-      shouldForceUpdate: true,
-    });
-  };
-
-  useEffect(() => resetVirtualGrid, [tableWidth, columns, size]);
 
   /*
    * antd Table has a runtime error when it tries to fire the onChange event triggered from a pageChange
@@ -166,7 +153,9 @@ const VirtualTable = <RecordType extends object>(
      * We intentionally leave horizontal scroll where it was so user can focus on
      * specific range of columns as they page through data
      */
-    gridRef.current?.scrollTo?.({ scrollTop: 0 });
+    if (gridRef.current?.element) {
+      gridRef.current.element.scrollTop = 0;
+    }
 
     onChange?.(
       {
@@ -183,70 +172,94 @@ const VirtualTable = <RecordType extends object>(
     );
   };
 
+  interface VirtualCellProps {
+    rawData: readonly object[];
+  }
+
+  const VirtualCell = ({
+    columnIndex,
+    rowIndex,
+    style,
+    rawData,
+  }: {
+    columnIndex: number;
+    rowIndex: number;
+    style: CSSProperties;
+    ariaAttributes: { 'aria-colindex': number; role: 'gridcell' };
+  } & VirtualCellProps) => {
+    const data = rawData?.[rowIndex] as Record<string, unknown> | undefined;
+    let content =
+      data?.[
+        (mergedColumns as { dataIndex?: string }[])?.[columnIndex]
+          ?.dataIndex as string
+      ];
+    const render = mergedColumns[columnIndex]?.render;
+    if (typeof render === 'function') {
+      content = render(content, data as RecordType, rowIndex);
+    }
+
+    if (allowHTML && typeof content === 'string') {
+      content = safeHtmlSpan(content);
+    }
+
+    const cellSize = size === TableSize.Middle ? MIDDLE : SMALL;
+
+    return (
+      <StyledCell
+        className={classNames('virtual-table-cell', {
+          'virtual-table-cell-last': columnIndex === mergedColumns.length - 1,
+        })}
+        style={style}
+        title={typeof content === 'string' ? content : undefined}
+        theme={theme}
+        height={cellSize}
+      >
+        {content as React.ReactNode}
+      </StyledCell>
+    );
+  };
+
   const renderVirtualList = (
     rawData: readonly object[],
-    { ref, onScroll }: any,
-  ) => {
-    // eslint-disable-next-line no-param-reassign
-    ref.current = connectObject;
+    {
+      ref: bodyRef,
+      onScroll,
+    }: {
+      scrollbarSize: number;
+      ref: React.Ref<{ scrollLeft: number }>;
+      onScroll: (info: {
+        currentTarget?: HTMLElement;
+        scrollLeft?: number;
+      }) => void;
+    },
+  ): React.ReactNode => {
+    if (
+      typeof bodyRef === 'object' &&
+      bodyRef !== null &&
+      'current' in bodyRef
+    ) {
+      // eslint-disable-next-line no-param-reassign
+      (bodyRef as React.MutableRefObject<unknown>).current = connectObject;
+    }
     const cellSize = size === TableSize.Middle ? MIDDLE : SMALL;
     return (
       <Grid
-        ref={gridRef}
+        gridRef={gridRef}
         className="virtual-grid"
         columnCount={mergedColumns.length}
         columnWidth={(index: number) => {
           const { width = DEFAULT_COL_WIDTH } = mergedColumns[index];
           return width as number;
         }}
-        height={height || (scroll!.y as number)}
+        style={{ height: height || (scroll!.y as number), width: tableWidth }}
         rowCount={rawData.length}
-        rowHeight={() => cellSize}
-        width={tableWidth}
-        onScroll={({ scrollLeft }: { scrollLeft: number }) => {
-          onScroll({ scrollLeft });
+        rowHeight={cellSize}
+        cellComponent={VirtualCell}
+        cellProps={{ rawData }}
+        onScroll={(e: React.UIEvent<HTMLDivElement>) => {
+          onScroll({ scrollLeft: (e.target as HTMLDivElement).scrollLeft });
         }}
-      >
-        {({
-          columnIndex,
-          rowIndex,
-          style,
-        }: {
-          columnIndex: number;
-          rowIndex: number;
-          style: CSSProperties;
-        }) => {
-          const data: any = rawData?.[rowIndex];
-          // Set default content
-          let content =
-            data?.[(mergedColumns as any)?.[columnIndex]?.dataIndex];
-          // Check if the column has a render function
-          const render = mergedColumns[columnIndex]?.render;
-          if (typeof render === 'function') {
-            // Use render function to generate formatted content using column's render function
-            content = render(content, data, rowIndex);
-          }
-
-          if (allowHTML && typeof content === 'string') {
-            content = safeHtmlSpan(content);
-          }
-
-          return (
-            <StyledCell
-              className={classNames('virtual-table-cell', {
-                'virtual-table-cell-last':
-                  columnIndex === mergedColumns.length - 1,
-              })}
-              style={style}
-              title={typeof content === 'string' ? content : undefined}
-              theme={theme}
-              height={cellSize}
-            >
-              {content}
-            </StyledCell>
-          );
-        }}
-      </Grid>
+      />
     );
   };
 
