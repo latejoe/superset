@@ -24,6 +24,10 @@ assists people when migrating to a new version.
 
 ## Next
 
+### Removed `JWT_VERIFY_SUB` configuration option
+
+The `JWT_VERIFY_SUB = False` workaround has been removed. Flask-AppBuilder 5.2.1 now passes the JWT identity as a string (`str(user.id)`), so PyJWT's `sub`-claim type enforcement no longer breaks `/api/security` endpoints. The Flask-JWT-Extended default (`True`) is restored, re-enabling standard `sub`-claim validation. Deployments that explicitly set `JWT_VERIFY_SUB = False` in `superset_config.py` can remove that override.
+
 ### Pivot table First/Last aggregations follow data order
 
 The pivot table chart's `First` and `Last` aggregations now return the first and last value in data (query result) order, instead of effectively returning the minimum and maximum. Existing pivot tables that use these aggregations for totals/subtotals may show different values after upgrading. For deterministic results, ensure the underlying query has a stable sort order.
