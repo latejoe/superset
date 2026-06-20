@@ -22,18 +22,7 @@ from typing import Any, Callable, Optional
 import celery
 from flask import Flask
 from flask_appbuilder import AppBuilder
-
-# Temporary fix for missing flask_appbuilder.utils.legacy module
-try:
-    from flask_appbuilder.utils.legacy import get_sqla_class
-except ImportError:
-    # Fallback if legacy module doesn't exist
-    from flask_sqlalchemy import SQLAlchemy
-
-    def get_sqla_class() -> Any:
-        return SQLAlchemy
-
-
+from flask_appbuilder.utils.legacy import get_sqla_class
 from flask_caching.backends.base import BaseCache
 from flask_migrate import Migrate
 from flask_talisman import Talisman
