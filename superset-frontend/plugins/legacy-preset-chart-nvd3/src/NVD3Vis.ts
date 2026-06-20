@@ -427,10 +427,7 @@ function nvd3Vis(element, props) {
           }),
         );
         chart.pointRange([5, maxBubbleSize ** 2]);
-        chart.pointDomain([
-          0,
-          max(data, d => max(d.values, v => v.size)),
-        ]);
+        chart.pointDomain([0, max(data, d => max(d.values, v => v.size))]);
         break;
 
       case VizType.BoxPlot:
