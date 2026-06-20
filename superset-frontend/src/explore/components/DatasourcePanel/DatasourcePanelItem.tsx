@@ -115,27 +115,22 @@ const Divider = styled.div`
 export interface DatasourcePanelItemProps {
   index: number;
   style: CSSProperties;
-  data: {
-    flattenedItems: FlattenedItem[];
-    folderMap: Map<string, Folder>;
-    width: number;
-    onToggleCollapse: (folderId: string) => void;
-    collapsedFolderIds: Set<string>;
-  };
+  flattenedItems: FlattenedItem[];
+  folderMap: Map<string, Folder>;
+  width: number;
+  onToggleCollapse: (folderId: string) => void;
+  collapsedFolderIds: Set<string>;
 }
 
 const DatasourcePanelItem = ({
   index,
   style,
-  data,
+  flattenedItems,
+  folderMap,
+  width,
+  onToggleCollapse,
+  collapsedFolderIds,
 }: DatasourcePanelItemProps) => {
-  const {
-    flattenedItems,
-    folderMap,
-    width,
-    onToggleCollapse,
-    collapsedFolderIds,
-  } = data;
   const item = flattenedItems[index];
   const theme = useTheme();
   const [labelRef, labelIsTruncated] = useCSSTextTruncation<HTMLSpanElement>({

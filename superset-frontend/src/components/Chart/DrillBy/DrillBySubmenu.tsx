@@ -44,7 +44,7 @@ import {
   Icons,
 } from '@superset-ui/core/components';
 import { debounce } from 'lodash';
-import { FixedSizeList as List } from 'react-window';
+import { List } from 'react-window';
 import { InputRef } from 'antd';
 import { MenuItemTooltip } from '../DisabledMenuItemTooltip';
 import { VirtualizedMenuItem } from '../MenuItemWithTruncation';
@@ -192,14 +192,13 @@ export const DrillBySubmenu = ({
 
   const Row = ({
     index,
-    data,
+    columns,
     style,
   }: {
     index: number;
-    data: { columns: Column[] };
+    columns: Column[];
     style: CSSProperties;
   }) => {
-    const { columns } = data;
     const column = columns[index];
     return (
       <VirtualizedMenuItem
@@ -259,15 +258,13 @@ export const DrillBySubmenu = ({
         </div>
       ) : filteredColumns.length ? (
         <List
-          width="100%"
-          height={SUBMENU_HEIGHT}
-          itemSize={35}
-          itemCount={filteredColumns.length}
-          itemData={{ columns: filteredColumns }}
+          style={{ height: SUBMENU_HEIGHT }}
+          rowHeight={35}
+          rowCount={filteredColumns.length}
+          rowProps={{ columns: filteredColumns }}
           overscanCount={20}
-        >
-          {Row}
-        </List>
+          rowComponent={Row}
+        />
       ) : (
         <div
           css={css`

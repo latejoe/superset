@@ -18,7 +18,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import type { VariableSizeList as List } from 'react-window';
+import type { ListImperativeAPI } from 'react-window';
 
 // Distance from edge where auto-scroll activates (in pixels)
 const SCROLL_THRESHOLD = 80;
@@ -28,7 +28,7 @@ const BASE_SCROLL_SPEED = 8;
 const MAX_SPEED_MULTIPLIER = 3;
 
 interface UseAutoScrollOptions {
-  listRef: React.RefObject<List>;
+  listRef: React.RefObject<ListImperativeAPI>;
   containerRef: React.RefObject<HTMLDivElement>;
   isDragging: boolean;
   listHeight: number;
@@ -110,7 +110,7 @@ export function useAutoScroll({
     // Animation frame callback - uses time-based scrolling for consistent speed
     const scrollFrame = (currentTime: number) => {
       const list = listRef.current;
-      const outerElement = (list as any)?._outerRef;
+      const outerElement = list?.element;
 
       if (!list || !outerElement || !state.direction) {
         // Restore pointer events when scrolling stops

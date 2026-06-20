@@ -44,16 +44,14 @@ import setupCodeOverrides from 'src/setup/setupCodeOverrides';
 import type { Action, Middleware, Store } from 'redux';
 import SqlEditor, { Props } from '.';
 
-jest.mock(
-  'react-virtualized-auto-sizer',
-  () =>
-    ({
-      children,
-    }: {
-      children: (params: { height: number }) => React.ReactChild;
-    }) =>
-      children({ height: 500 }),
-);
+jest.mock('react-virtualized-auto-sizer', () => ({
+  __esModule: true,
+  default: ({
+    renderProp,
+  }: {
+    renderProp: (params: { height: number; width: number }) => React.ReactChild;
+  }) => renderProp({ height: 500, width: 400 }),
+}));
 jest.mock('@superset-ui/core/components/AsyncAceEditor', () => ({
   ...jest.requireActual('@superset-ui/core/components/AsyncAceEditor'),
   FullSQLEditor: ({

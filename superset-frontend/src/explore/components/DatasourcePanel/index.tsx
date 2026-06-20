@@ -300,15 +300,17 @@ export default function DataSourcePanel({
               />
             </StyledInfoboxWrapper>
           )}
-          <AutoSizer>
-            {({ height }: { height: number }) => (
-              <DatasourceItems
-                width={width - BORDER_WIDTH}
-                height={height}
-                folders={folders}
-              />
-            )}
-          </AutoSizer>
+          <AutoSizer
+            renderProp={({ height }: { height?: number }) =>
+              height != null ? (
+                <DatasourceItems
+                  width={width - BORDER_WIDTH}
+                  height={height}
+                  folders={folders}
+                />
+              ) : null
+            }
+          />
         </div>
       </>
     ),

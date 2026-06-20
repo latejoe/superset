@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { VariableSizeList as List } from 'react-window';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { List, type ListImperativeAPI } from 'react-window';
 import { FlattenedItem, Folder } from './types';
 import DatasourcePanelItem from './DatasourcePanelItem';
 
@@ -98,7 +98,7 @@ export const DatasourceItems = ({
   height,
   folders,
 }: DatasourceItemsProps) => {
-  const listRef = useRef<List>(null);
+  const listRef = useRef<ListImperativeAPI>(null);
   const [collapsedFolderIds, setCollapsedFolderIds] = useState<Set<string>>(
     new Set(
       folders.filter(folder => folder.isCollapsed).map(folder => folder.id),
@@ -121,11 +121,6 @@ export const DatasourceItems = ({
       return newIds;
     });
   }, []);
-
-  useEffect(() => {
-    // reset the list cache when flattenedItems length changes to recalculate the heights
-    listRef.current?.resetAfterIndex(0);
-  }, [flattenedItems]);
 
   const getItemSize = useCallback(
     (index: number) => flattenedItems[index].height,
@@ -151,15 +146,13 @@ export const DatasourceItems = ({
 
   return (
     <List
-      ref={listRef}
-      width={width - BORDER_WIDTH}
-      height={height}
-      itemSize={getItemSize}
-      itemCount={flattenedItems.length}
-      itemData={itemData}
+      listRef={listRef}
+      style={{ width: width - BORDER_WIDTH, height }}
+      rowHeight={getItemSize}
+      rowCount={flattenedItems.length}
+      rowProps={itemData}
       overscanCount={5}
-    >
-      {DatasourcePanelItem}
-    </List>
+      rowComponent={DatasourcePanelItem}
+    />
   );
 };

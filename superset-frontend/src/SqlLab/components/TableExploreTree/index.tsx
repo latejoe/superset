@@ -479,8 +479,12 @@ const TableExploreTree: React.FC<Props> = ({ queryEditorId }) => {
         <ErrorMessageWithStackTrace error={errorPayload} source="crud" />
       )}
       <StyledTreeContainer>
-        <AutoSizer disableWidth>
-          {({ height }) => {
+        <AutoSizer
+          renderProp={({ height }: { height?: number }) => {
+            if (height == null) {
+              return null;
+            }
+
             if (isFetching) {
               return <Skeleton active />;
             }
@@ -551,7 +555,7 @@ const TableExploreTree: React.FC<Props> = ({ queryEditorId }) => {
               </Tree>
             );
           }}
-        </AutoSizer>
+        />
       </StyledTreeContainer>
     </>
   );

@@ -18,7 +18,7 @@
  */
 
 import { CSSProperties, memo } from 'react';
-import type { ListChildComponentProps } from 'react-window';
+import type { RowComponentProps } from 'react-window';
 import { useDroppable } from '@dnd-kit/core';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import type { Metric, ColumnMeta } from '@superset-ui/chart-controls';
@@ -138,29 +138,25 @@ const TreeItemWrapper = memo(function TreeItemWrapper({
 function VirtualizedTreeItemComponent({
   index,
   style,
-  data,
-}: ListChildComponentProps<VirtualizedTreeItemData>) {
-  const {
-    flattenedItems,
-    collapsedIds,
-    selectedItemIds,
-    editingFolderId,
-    folderChildCounts,
-    itemSeparatorInfo,
-    visibleItemIds,
-    searchTerm,
-    metricsMap,
-    columnsMap,
-    activeId,
-    draggedFolderChildIds,
-    forbiddenDropFolderIds,
-    currentDropTargetId,
-    onToggleCollapse,
-    onSelect,
-    onStartEdit,
-    onFinishEdit,
-  } = data;
-
+  flattenedItems,
+  collapsedIds,
+  selectedItemIds,
+  editingFolderId,
+  folderChildCounts,
+  itemSeparatorInfo,
+  visibleItemIds,
+  searchTerm,
+  metricsMap,
+  columnsMap,
+  activeId,
+  draggedFolderChildIds,
+  forbiddenDropFolderIds,
+  currentDropTargetId,
+  onToggleCollapse,
+  onSelect,
+  onStartEdit,
+  onFinishEdit,
+}: RowComponentProps<VirtualizedTreeItemData>) {
   const item = flattenedItems[index];
 
   if (!item) {
