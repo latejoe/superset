@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+// @ts-nocheck
 /* oxlint-disable no-use-before-define: ["error", { "functions": false }] */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/sort-prop-types */

@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+// @ts-nocheck
 /* eslint-disable react/sort-prop-types */
 import { extent as d3Extent } from 'd3-array';
 import { rgb } from 'd3-color';

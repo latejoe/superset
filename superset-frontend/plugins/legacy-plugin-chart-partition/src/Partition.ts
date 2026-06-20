@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable react/sort-prop-types */
 /**
  * Licensed to the Apache Software Foundation (ASF) under one

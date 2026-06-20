@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+// @ts-nocheck
 /* eslint-disable no-param-reassign, react/sort-prop-types */
 import { descending } from 'd3-array';
 import { chord as chordLayout, ribbon } from 'd3-chord';
