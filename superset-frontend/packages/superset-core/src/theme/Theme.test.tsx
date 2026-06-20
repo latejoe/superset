@@ -338,10 +338,10 @@ test('Theme edge cases correctly applies base theme tokens in dark mode', () => 
     algorithm: antdThemeImport.defaultAlgorithm,
   };
 
-  const baseThemeDark: AnyThemeConfig = {
+  const baseThemeDark = {
     ...baseTheme,
     algorithm: antdThemeImport.darkAlgorithm,
-  };
+  } as AnyThemeConfig;
 
   // Simulate light mode with base theme
   const lightTheme = Theme.fromConfig({}, baseTheme);
@@ -473,10 +473,10 @@ test('Theme base theme integration handles base theme with dark algorithm correc
     },
   };
 
-  const baseThemeDark: AnyThemeConfig = {
+  const baseThemeDark = {
     ...baseTheme,
     algorithm: antdThemeImport.darkAlgorithm,
-  };
+  } as AnyThemeConfig;
 
   const userDarkTheme: AnyThemeConfig = {
     algorithm: antdThemeImport.darkAlgorithm,
@@ -525,7 +525,7 @@ test('Theme base theme integration works with real-world Superset base theme con
   const darkTheme = Theme.fromConfig(themeDark, {
     ...supersetBaseTheme,
     algorithm: antdThemeImport.darkAlgorithm,
-  });
+  } as AnyThemeConfig);
   expect(darkTheme.theme.fontFamily).toBe("'Inter', Helvetica, Arial");
 
   const darkSerialized = darkTheme.toSerializedConfig();

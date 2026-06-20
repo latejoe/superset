@@ -572,7 +572,7 @@ export function ListView<T extends object = any>({
                     onChange={(page: number) => {
                       gotoPage(page - 1);
                     }}
-                    size="default"
+                    size="small"
                     showSizeChanger={false}
                     showQuickJumper={false}
                     hideOnSinglePage
