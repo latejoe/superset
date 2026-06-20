@@ -19,13 +19,7 @@
 
 import '@testing-library/jest-dom';
 import { render, fireEvent } from '@testing-library/react';
-import d3 from 'd3';
 import ReactCountryMap from '../src/ReactCountryMap';
-
-// d3 v3 APIs have loose types; cast to allow jest mock operations
-const d3Any = d3 as any;
-
-jest.spyOn(d3Any, 'json');
 
 type Projection = ((...args: unknown[]) => void) & {
   scale: () => Projection;
@@ -47,19 +41,31 @@ mockPath.bounds = jest.fn(() => [
 ]);
 mockPath.centroid = jest.fn(() => [50, 50]);
 
-jest.spyOn(d3Any.geo, 'path').mockImplementation(() => mockPath);
+const mockD3Json = jest.fn();
 
-// Mock d3.geo.mercator
-jest.spyOn(d3Any.geo, 'mercator').mockImplementation(() => {
-  const proj = (() => {}) as Projection;
-  proj.scale = () => proj;
-  proj.center = () => proj;
-  proj.translate = () => proj;
-  return proj;
+jest.mock('d3-geo', () => ({
+  geoPath: jest.fn(() => mockPath),
+  geoMercator: jest.fn(() => {
+    const proj = (() => {}) as Projection;
+    proj.scale = () => proj;
+    proj.center = () => proj;
+    proj.translate = () => proj;
+    return proj;
+  }),
+  geoCentroid: jest.fn(() => [0, 0]),
+}));
+
+jest.mock('d3-fetch', () => ({
+  json: (...args: unknown[]) => mockD3Json(...args),
+}));
+
+jest.mock('d3-selection', () => {
+  const actual = jest.requireActual('d3-selection');
+  return {
+    ...actual,
+    pointer: jest.fn(() => [100, 50]),
+  };
 });
-
-// Mock d3.mouse
-jest.spyOn(d3Any, 'mouse').mockReturnValue([100, 50]);
 
 const mockMapData = {
   type: 'FeatureCollection',
@@ -72,17 +78,13 @@ const mockMapData = {
   ],
 };
 
-type D3JsonCallback = (error: Error | null, data: unknown) => void;
-
 describe('CountryMap (legacy d3)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   test('renders a map after d3.json loads data', async () => {
-    d3Any.json.mockImplementation((_url: string, cb: D3JsonCallback) =>
-      cb(null, mockMapData),
-    );
+    mockD3Json.mockResolvedValue(mockMapData as any);
 
     render(
       <ReactCountryMap
@@ -97,16 +99,15 @@ describe('CountryMap (legacy d3)', () => {
       />,
     );
 
-    expect(d3Any.json).toHaveBeenCalledTimes(1);
+    expect(mockD3Json).toHaveBeenCalledTimes(1);
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     const region = document.querySelector('path.region');
     expect(region).not.toBeNull();
   });
 
   test('shows tooltip on mouseenter/mousemove/mouseout', async () => {
-    d3Any.json.mockImplementation((_url: string, cb: D3JsonCallback) =>
-      cb(null, mockMapData),
-    );
+    mockD3Json.mockResolvedValue(mockMapData as any);
 
     render(
       <ReactCountryMap
@@ -119,6 +120,8 @@ describe('CountryMap (legacy d3)', () => {
         formatter={jest.fn().mockReturnValue('100')}
       />,
     );
+
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     const region = document.querySelector('path.region');
     expect(region).not.toBeNull();
@@ -133,10 +136,8 @@ describe('CountryMap (legacy d3)', () => {
     expect(popup!).toHaveStyle({ display: 'none' });
   });
 
-  test('shows tooltip on mouseenter/mousemove/mouseout', async () => {
-    d3Any.json.mockImplementation((_url: string, cb: D3JsonCallback) =>
-      cb(null, mockMapData),
-    );
+  test('shows tooltip on mouseenter/mousemove/mouseout (duplicate)', async () => {
+    mockD3Json.mockResolvedValue(mockMapData as any);
 
     render(
       <ReactCountryMap
@@ -149,6 +150,8 @@ describe('CountryMap (legacy d3)', () => {
         formatter={jest.fn().mockReturnValue('100')}
       />,
     );
+
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     const region = document.querySelector('path.region');
     expect(region).not.toBeNull();

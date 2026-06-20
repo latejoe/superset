@@ -30,7 +30,11 @@
   },
   "dependencies": {
     "d3": "^3.5.17",
+    "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2",
+    "d3-selection": "^3.0.0",
     "d3-tip": "^0.9.1",
+    "d3-time": "^3.1.0",
     "fast-safe-stringify": "^2.1.1",
     "lodash": "^4.18.1",
     "nvd3-fork": "^2.0.5",
