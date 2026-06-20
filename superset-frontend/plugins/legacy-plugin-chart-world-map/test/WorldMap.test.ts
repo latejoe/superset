@@ -17,10 +17,15 @@
  * under the License.
  */
 
-import * as d3Selection from 'd3-selection';
 import { getNumberFormatter, ValueFormatter } from '@superset-ui/core';
 import WorldMap from '../src/WorldMap';
 import { ColorBy } from '../src/utils';
+
+const mockSelect = jest.fn();
+jest.mock('d3-selection', () => ({
+  ...jest.requireActual('d3-selection'),
+  select: (...args: unknown[]) => mockSelect(...args),
+}));
 
 interface WorldMapDataEntry {
   country: string;
@@ -204,7 +209,7 @@ test('stores original fill color on mouseover', () => {
     selectAll: jest.fn().mockReturnValue({ remove: jest.fn() }),
   };
 
-  jest.spyOn(d3Selection, 'select').mockReturnValue(mockD3Selection as any);
+  mockSelect.mockReturnValue(mockD3Selection as any);
 
   // Capture the mouseover handler (namespaced event)
   mockSvg.on.mockImplementation((event: string, handler: MouseEventHandler) => {
@@ -259,7 +264,7 @@ test('restores original fill color on mouseout for country with data', () => {
     selectAll: jest.fn().mockReturnValue({ remove: jest.fn() }),
   };
 
-  jest.spyOn(d3Selection, 'select').mockReturnValue(mockD3Selection as any);
+  mockSelect.mockReturnValue(mockD3Selection as any);
 
   // Capture the mouseout handler (namespaced event)
   mockSvg.on.mockImplementation((event: string, handler: MouseEventHandler) => {
@@ -315,7 +320,7 @@ test('restores default fill color on mouseout for country with no data', () => {
     selectAll: jest.fn().mockReturnValue({ remove: jest.fn() }),
   };
 
-  jest.spyOn(d3Selection, 'select').mockReturnValue(mockD3Selection as any);
+  mockSelect.mockReturnValue(mockD3Selection as any);
 
   // Capture the mouseout handler (namespaced event)
   mockSvg.on.mockImplementation((event: string, handler: MouseEventHandler) => {
@@ -358,7 +363,7 @@ test('does not handle mouse events when inContextMenu is true', () => {
     selectAll: jest.fn().mockReturnValue({ remove: jest.fn() }),
   };
 
-  jest.spyOn(d3Selection, 'select').mockReturnValue(mockD3Selection as any);
+  mockSelect.mockReturnValue(mockD3Selection as any);
 
   // Capture namespaced event handlers
   mockSvg.on.mockImplementation((event: string, handler: MouseEventHandler) => {
