@@ -32,8 +32,10 @@ import * as net from 'net';
 import { WebSocket } from 'ws';
 
 interface MockedRedisXrange {
-  (): Promise<server.StreamResult[]>;
+  (key: string, start: string, end: string): Promise<server.StreamResult[]>;
 }
+
+type MockedSend = jest.SpiedFunction<(data: string) => void>;
 
 // NOTE: these mock variables needs to start with "mock" due to
 // calls to `jest.mock` being hoisted to the top of the file.
@@ -70,12 +72,12 @@ import * as server from '../src/index';
 import { statsd } from '../src/index';
 
 describe('server', () => {
-  let statsdIncrementMock: jest.SpiedFunction<typeof statsd.increment>;
+  let statsdIncrementMock: jest.SpiedFunction<(stat: string, tags?: Record<string, string>) => void>;
 
   beforeEach(() => {
     mockRedisXrange.mockClear();
     server.resetState();
-    statsdIncrementMock = jest.spyOn(statsd, 'increment').mockReturnValue();
+    statsdIncrementMock = jest.spyOn(statsd, 'increment').mockReturnValue() as unknown as typeof statsdIncrementMock;
   });
 
   afterEach(() => {
@@ -245,7 +247,7 @@ describe('server', () => {
   describe('processStreamResults', () => {
     test('sends data to channel', async () => {
       const ws = new wsMock('localhost');
-      const sendMock = jest.spyOn(ws, 'send');
+      const sendMock = jest.spyOn(ws, 'send') as unknown as MockedSend;
       const socketInstance = { ws: ws, channel: channelId, pongTs: Date.now() };
 
       expect(statsdIncrementMock).toHaveBeenCalledTimes(0);
@@ -267,7 +269,7 @@ describe('server', () => {
 
     test('channel not present', async () => {
       const ws = new wsMock('localhost');
-      const sendMock = jest.spyOn(ws, 'send');
+      const sendMock = jest.spyOn(ws, 'send') as unknown as MockedSend;
 
       expect(statsdIncrementMock).toHaveBeenCalledTimes(0);
       server.processStreamResults(streamReturnValue);
@@ -278,7 +280,7 @@ describe('server', () => {
 
     test('error sending data to client', async () => {
       const ws = new wsMock('localhost');
-      const sendMock = jest.spyOn(ws, 'send').mockImplementation(() => {
+      const sendMock = (jest.spyOn(ws, 'send') as unknown as MockedSend).mockImplementation(() => {
         throw new Error();
       });
       const cleanChannelMock = jest.spyOn(server, 'cleanChannel');
@@ -330,7 +332,7 @@ describe('server', () => {
         channel: channelId,
         pongTs: Date.now(),
       });
-      const sendMock = jest.spyOn(ws, 'send');
+      const sendMock = jest.spyOn(ws, 'send') as unknown as MockedSend;
       const setImmediateSpy = jest.spyOn(global, 'setImmediate');
 
       const results = [0, 1, 2, 3, 4].map(makeItem);
@@ -351,7 +353,7 @@ describe('server', () => {
         channel: channelId,
         pongTs: Date.now(),
       });
-      const sendMock = jest.spyOn(ws, 'send');
+      const sendMock = jest.spyOn(ws, 'send') as unknown as MockedSend;
 
       const results = [0, 1, 2, 3, 4].map(makeItem);
       await server.processStreamResults(results);
@@ -381,7 +383,7 @@ describe('server', () => {
       // simulate a large outbound buffer
       (ws as unknown as { bufferedAmount: number }).bufferedAmount = 10_000_000;
       const terminateMock = jest.spyOn(ws, 'terminate');
-      const sendMock = jest.spyOn(ws, 'send');
+      const sendMock = jest.spyOn(ws, 'send') as unknown as MockedSend;
       server.trackClient(channelId, {
         ws,
         channel: channelId,
@@ -399,7 +401,7 @@ describe('server', () => {
       const ws = new wsMock('localhost');
       (ws as unknown as { bufferedAmount: number }).bufferedAmount = 2048;
       const terminateMock = jest.spyOn(ws, 'terminate');
-      const sendMock = jest.spyOn(ws, 'send');
+      const sendMock = jest.spyOn(ws, 'send') as unknown as MockedSend;
       const cleanChannelMock = jest.spyOn(server, 'cleanChannel');
       server.trackClient(channelId, {
         ws,
@@ -422,7 +424,7 @@ describe('server', () => {
       const ws = new wsMock('localhost');
       (ws as unknown as { bufferedAmount: number }).bufferedAmount = 16;
       const terminateMock = jest.spyOn(ws, 'terminate');
-      const sendMock = jest.spyOn(ws, 'send');
+      const sendMock = jest.spyOn(ws, 'send') as unknown as MockedSend;
       server.trackClient(channelId, {
         ws,
         channel: channelId,
