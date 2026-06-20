@@ -219,15 +219,28 @@ const VirtualTable = <RecordType extends object>(
     );
   };
 
-  const renderVirtualList: (
-    rawData: readonly RecordType[],
-    info: {
-      ref: React.MutableRefObject<unknown>;
-      onScroll: (info: { scrollLeft: number }) => void;
+  const renderVirtualList = (
+    rawData: readonly object[],
+    {
+      ref: bodyRef,
+      onScroll,
+    }: {
+      scrollbarSize: number;
+      ref: React.Ref<{ scrollLeft: number }>;
+      onScroll: (info: {
+        currentTarget?: HTMLElement;
+        scrollLeft?: number;
+      }) => void;
     },
-  ) => React.ReactNode = (rawData, { ref: bodyRef, onScroll }) => {
-    // eslint-disable-next-line no-param-reassign
-    bodyRef.current = connectObject;
+  ): React.ReactNode => {
+    if (
+      typeof bodyRef === 'object' &&
+      bodyRef !== null &&
+      'current' in bodyRef
+    ) {
+      // eslint-disable-next-line no-param-reassign
+      (bodyRef as React.MutableRefObject<unknown>).current = connectObject;
+    }
     const cellSize = size === TableSize.Middle ? MIDDLE : SMALL;
     return (
       <Grid
