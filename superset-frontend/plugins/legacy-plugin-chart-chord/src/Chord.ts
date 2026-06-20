@@ -19,7 +19,12 @@
 /* eslint-disable no-param-reassign, react/sort-prop-types */
 import { select, Selection } from 'd3-selection';
 import { arc as d3Arc } from 'd3-shape';
-import { chord as d3Chord, ribbon as d3Ribbon, ChordGroup, Chord as D3Chord } from 'd3-chord';
+import {
+  chord as d3Chord,
+  ribbon as d3Ribbon,
+  ChordGroup,
+  Chord as D3Chord,
+} from 'd3-chord';
 import { descending } from 'd3-array';
 import {
   getNumberFormatter,
@@ -66,7 +71,9 @@ function Chord(element: HTMLElement, props: ChordProps) {
     .sortSubgroups(descending)
     .sortChords(descending);
 
-  const ribbonGenerator = d3Ribbon<D3Chord, D3Chord['source']>().radius(innerRadius);
+  const ribbonGenerator = d3Ribbon<D3Chord, D3Chord['source']>().radius(
+    innerRadius,
+  );
 
   const svg = div
     .append('svg')
@@ -96,22 +103,24 @@ function Chord(element: HTMLElement, props: ChordProps) {
     });
 
   // Add a mouseover title.
-  group.append('title').text(d => `${nodes[d.index]}: ${f(d.value)}`);
+  group
+    .append('title')
+    .text((d: ChordGroup) => `${nodes[d.index]}: ${f(d.value)}`);
 
   // Add the group arc.
   const groupPath = group
     .append('path')
-    .attr('id', (_d, i) => `group${i}`)
-    .attr('d', d => arcGenerator(d) || '')
-    .style('fill', d => colorFn(nodes[d.index], sliceId));
+    .attr('id', (_d: ChordGroup, i: number) => `group${i}`)
+    .attr('d', (d: ChordGroup) => arcGenerator(d) || '')
+    .style('fill', (d: ChordGroup) => colorFn(nodes[d.index], sliceId));
 
   // Add a text label.
   const groupText = group.append('text').attr('x', 6).attr('dy', 15);
 
   groupText
     .append('textPath')
-    .attr('xlink:href', (_d, i) => `#group${i}`)
-    .text(d => nodes[d.index]);
+    .attr('xlink:href', (_d: ChordGroup, i: number) => `#group${i}`)
+    .text((d: ChordGroup) => nodes[d.index]);
   // Remove the labels that don't fit. :(
   const groupPathNodes = groupPath.nodes();
   groupText
@@ -133,14 +142,14 @@ function Chord(element: HTMLElement, props: ChordProps) {
     .on('mouseover', (_event: MouseEvent, d: D3Chord) => {
       chordSelection.classed('fade', p => p !== d);
     })
-    .style('fill', d => colorFn(nodes[d.source.index], sliceId))
-    .attr('d', d => ribbonGenerator(d) || '');
+    .style('fill', (d: D3Chord) => colorFn(nodes[d.source.index], sliceId))
+    .attr('d', (d: D3Chord) => ribbonGenerator(d) || '');
 
   // Add an elaborate mouseover title for each chord.
   chordSelection
     .append('title')
     .text(
-      d =>
+      (d: D3Chord) =>
         `${nodes[d.source.index]} \u2192 ${nodes[d.target.index]}: ${f(
           d.target.value,
         )}\n${nodes[d.target.index]} \u2192 ${nodes[d.source.index]}: ${f(
