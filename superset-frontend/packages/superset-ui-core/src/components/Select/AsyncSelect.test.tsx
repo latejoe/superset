@@ -1166,7 +1166,7 @@ test('keeps loading indicator while a newer request is in flight after a stale r
   const isSpinnerVisible = (): boolean =>
     Boolean(
       document.querySelector('.ant-select-suffix .ant-spin') ||
-        document.querySelector('.ant-select-arrow .ant-spin'),
+      document.querySelector('.ant-select-arrow .ant-spin'),
     );
 
   try {
