@@ -17,7 +17,13 @@
  * under the License.
  */
 // @ts-nocheck -- legacy file heavily dependent on untyped d3 v3 and nvd3 APIs
-import d3 from 'd3';
+import {
+  extent as d3Extent,
+  max as d3Max,
+  min as d3Min,
+  sum as d3Sum,
+} from 'd3-array';
+import { select as d3Select } from 'd3-selection';
 import d3tip from 'd3-tip';
 import dompurify from 'dompurify';
 import {
@@ -62,7 +68,7 @@ export function drawBarValues(svg, data, stacked, axisFormat) {
             .filter(series => !series.disabled)
             .map(series => series.values[iBar]);
 
-          return d3.sum(bars, d => d.y);
+          return d3Sum(bars, d => d.y);
         })
       : [];
   svg.selectAll('.bar-chart-label-group').remove();
@@ -77,7 +83,7 @@ export function drawBarValues(svg, data, stacked, axisFormat) {
       .filter((d, i) => !stacked || i === countSeriesDisplayed - 1)
       .selectAll('rect')
       .each(function each(d, index) {
-        const rectObj = d3.select(this);
+        const rectObj = d3Select(this);
         const transformAttr = rectObj.attr('transform');
         const xPos = parseFloat(rectObj.attr('x'));
         const yPos = parseFloat(rectObj.attr('y'));
@@ -343,9 +349,9 @@ export function computeYDomain(data) {
   if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0].values)) {
     const extents = data
       .filter(d => !d.disabled)
-      .map(row => d3.extent(row.values, v => v.y));
-    const minOfMin = d3.min(extents, ([min]) => min);
-    const maxOfMax = d3.max(extents, ([, max]) => max);
+      .map(row => d3Extent(row.values, v => v.y));
+    const minOfMin = d3Min(extents, ([min]) => min);
+    const maxOfMax = d3Max(extents, ([, max]) => max);
 
     return [minOfMin, maxOfMax];
   }

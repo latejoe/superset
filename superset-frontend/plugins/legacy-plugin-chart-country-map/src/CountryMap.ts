@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,8 +17,12 @@
  * under the License.
  */
 /* eslint-disable react/sort-prop-types */
-import d3 from 'd3';
 import { extent as d3Extent } from 'd3-array';
+import { rgb } from 'd3-color';
+import { json as d3Json } from 'd3-fetch';
+import { geoPath, geoMercator, geoCentroid } from 'd3-geo';
+import { select, pointer } from 'd3-selection';
+import 'd3-transition';
 import {
   ValueFormatter,
   getNumberFormatter,
@@ -101,8 +104,8 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
   });
   const colorFn = (d: GeoFeature) => colorMap[d.properties.ISO] || 'none';
 
-  const path = d3.geo.path();
-  const div = d3.select(container);
+  const path = geoPath();
+  const div = select(container);
   div.classed('superset-legacy-chart-country-map', true);
   div.selectAll('*').remove();
   container.style.height = `${height}px`;
@@ -123,7 +126,8 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
 
   let centered: GeoFeature | null;
 
-  const clicked = function clicked(d: GeoFeature) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const clicked = function clicked(_event: any, d: GeoFeature) {
     const hasCenter = d && centered !== d;
     let x: number;
     let y: number;
@@ -132,7 +136,8 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
     const halfHeight = height / 2;
 
     if (hasCenter) {
-      const centroid = path.centroid(d);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const centroid = path.centroid(d as any);
       [x, y] = centroid;
       k = 4;
       centered = d;
@@ -165,9 +170,13 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
     return '';
   };
 
+  let lastMouseEvent: MouseEvent | null = null;
+
   const updatePopupPosition = () => {
-    const svgHeight = svg.node().getBoundingClientRect().height;
-    const [x, y] = d3.mouse(svg.node());
+    const svgNode = svg.node();
+    if (!svgNode || !lastMouseEvent) return;
+    const svgHeight = svgNode.getBoundingClientRect().height;
+    const [x, y] = pointer(lastMouseEvent, svgNode);
     hoverPopup
       .style('display', 'block')
       .style('top', `${y + 30}px`)
@@ -175,53 +184,63 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
       .classed('popup-at-bottom', y > (svgHeight * 2) / 3);
   };
 
-  const mouseenter = function mouseenter(this: SVGPathElement, d: GeoFeature) {
+  const mouseenter = function mouseenter(
+    this: SVGPathElement,
+    event: MouseEvent,
+    d: GeoFeature,
+  ) {
+    lastMouseEvent = event;
     // Darken color
     let c: string = colorFn(d);
     if (c !== 'none') {
-      c = d3.rgb(c).darker().toString();
+      c = rgb(c).darker().toString();
     }
-    d3.select(this).style('fill', c);
+    select(this).style('fill', c);
     // Display information popup
     const result = data.filter(
       region => region.country_id === d.properties.ISO,
     );
 
-    hoverPopup.style('display', 'block').html(
-      `<div><strong>${getNameOfRegion(d)}</strong><br>${result.length > 0 ? formatter(result[0].metric) : ''}</div>`,
-    );
+    hoverPopup
+      .style('display', 'block')
+      .html(
+        `<div><strong>${getNameOfRegion(d)}</strong><br>${result.length > 0 ? formatter(result[0].metric) : ''}</div>`,
+      );
     updatePopupPosition();
   };
 
-  const mousemove = function mousemove() {
+  const mousemove = function mousemove(event: MouseEvent) {
+    lastMouseEvent = event;
     updatePopupPosition();
   };
 
   const mouseout = function mouseout(this: SVGPathElement) {
-    d3.select(this).style('fill', colorFn);
+    select(this).style('fill', colorFn);
     hoverPopup.style('display', 'none');
   };
 
   function drawMap(mapData: GeoData) {
     const { features } = mapData;
-    const center = d3.geo.centroid(mapData);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const center = geoCentroid(mapData as any);
     const scale = 100;
-    const projection = d3.geo
-      .mercator()
+    const projection = geoMercator()
       .scale(scale)
       .center(center)
       .translate([width / 2, height / 2]);
     path.projection(projection);
 
     // Compute scale that fits container.
-    const bounds = path.bounds(mapData);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bounds = path.bounds(mapData as any);
     const hscale = (scale * width) / (bounds[1][0] - bounds[0][0]);
     const vscale = (scale * height) / (bounds[1][1] - bounds[0][1]);
     const newScale = hscale < vscale ? hscale : vscale;
 
     // Compute bounds and offset using the updated scale.
     projection.scale(newScale);
-    const newBounds = path.bounds(mapData);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const newBounds = path.bounds(mapData as any);
     projection.translate([
       width - (newBounds[0][0] + newBounds[1][0]) / 2,
       height - (newBounds[0][1] + newBounds[1][1]) / 2,
@@ -233,7 +252,8 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
       .data(features)
       .enter()
       .append('path')
-      .attr('d', path)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .attr('d', path as any)
       .attr('class', 'region')
       .attr('vector-effect', 'non-scaling-stroke')
       .style('fill', colorFn)
@@ -251,23 +271,23 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
     if (!url) {
       const countryName =
         countryOptions.find(x => x[0] === country)?.[1] || country;
-      d3.select(element).html(
+      select(element).html(
         `<div class="alert alert-danger">No map data available for ${escapeHtml(countryName)}</div>`,
       );
       return;
     }
-    d3.json(url, (error: unknown, mapData: GeoData) => {
-      if (error) {
+    d3Json(url)
+      .then((mapData: unknown) => {
+        maps[country] = mapData as GeoData;
+        drawMap(mapData as GeoData);
+      })
+      .catch(() => {
         const countryName =
           countryOptions.find(x => x[0] === country)?.[1] || country;
-        d3.select(element).html(
+        select(element).html(
           `<div class="alert alert-danger">Could not load map data for ${escapeHtml(countryName)}</div>`,
         );
-      } else {
-        maps[country] = mapData;
-        drawMap(mapData);
-      }
-    });
+      });
   }
 }
 
