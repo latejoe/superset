@@ -58,10 +58,13 @@ const catalogApiRoute = 'glob:*/api/v1/database/*/catalogs/?*';
 const schemaApiRoute = 'glob:*/api/v1/database/*/schemas/?*';
 const tablesApiRoute = 'glob:*/api/v1/database/*/tables/*';
 
-const getSelectItemContainer = (select: HTMLElement) =>
-  select.parentElement?.parentElement?.getElementsByClassName(
-    'ant-select-selection-item',
-  );
+const getSelectItemContainer = (select: HTMLElement) => {
+  const content = select.closest('.ant-select-content');
+  if (content?.classList.contains('ant-select-content-has-value')) {
+    return [content] as unknown as HTMLCollectionOf<Element>;
+  }
+  return [] as unknown as HTMLCollectionOf<Element>;
+};
 
 // Add cleanup and increase timeout
 beforeAll(() => {
