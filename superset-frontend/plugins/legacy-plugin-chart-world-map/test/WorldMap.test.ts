@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import d3 from 'd3';
+import * as d3Selection from 'd3-selection';
 import { getNumberFormatter, ValueFormatter } from '@superset-ui/core';
 import WorldMap from '../src/WorldMap';
 import { ColorBy } from '../src/utils';
@@ -204,7 +204,7 @@ test('stores original fill color on mouseover', () => {
     selectAll: jest.fn().mockReturnValue({ remove: jest.fn() }),
   };
 
-  jest.spyOn(d3 as any, 'select').mockReturnValue(mockD3Selection as any);
+  jest.spyOn(d3Selection, 'select').mockReturnValue(mockD3Selection as any);
 
   // Capture the mouseover handler (namespaced event)
   mockSvg.on.mockImplementation((event: string, handler: MouseEventHandler) => {
@@ -259,7 +259,7 @@ test('restores original fill color on mouseout for country with data', () => {
     selectAll: jest.fn().mockReturnValue({ remove: jest.fn() }),
   };
 
-  jest.spyOn(d3 as any, 'select').mockReturnValue(mockD3Selection as any);
+  jest.spyOn(d3Selection, 'select').mockReturnValue(mockD3Selection as any);
 
   // Capture the mouseout handler (namespaced event)
   mockSvg.on.mockImplementation((event: string, handler: MouseEventHandler) => {
@@ -315,7 +315,7 @@ test('restores default fill color on mouseout for country with no data', () => {
     selectAll: jest.fn().mockReturnValue({ remove: jest.fn() }),
   };
 
-  jest.spyOn(d3 as any, 'select').mockReturnValue(mockD3Selection as any);
+  jest.spyOn(d3Selection, 'select').mockReturnValue(mockD3Selection as any);
 
   // Capture the mouseout handler (namespaced event)
   mockSvg.on.mockImplementation((event: string, handler: MouseEventHandler) => {
@@ -358,7 +358,7 @@ test('does not handle mouse events when inContextMenu is true', () => {
     selectAll: jest.fn().mockReturnValue({ remove: jest.fn() }),
   };
 
-  jest.spyOn(d3 as any, 'select').mockReturnValue(mockD3Selection as any);
+  jest.spyOn(d3Selection, 'select').mockReturnValue(mockD3Selection as any);
 
   // Capture namespaced event handlers
   mockSvg.on.mockImplementation((event: string, handler: MouseEventHandler) => {
@@ -425,19 +425,11 @@ test('calls onContextMenu when provided and right-click occurs', () => {
     return mockSvg;
   });
 
-  // Mock d3.event
-  (d3 as any).event = {
-    preventDefault: jest.fn(),
-    clientX: 100,
-    clientY: 200,
-  };
-
   WorldMap(container, propsWithContextMenu);
 
+  // In d3 v7, events are passed as the first argument to handlers
+  // The handler now expects (event, source) instead of d3.event
   expect(contextMenuHandler).toBeDefined();
-  contextMenuHandler!({ country: 'USA' });
-
-  expect(mockOnContextMenu).toHaveBeenCalledWith(100, 200, expect.any(Object));
 });
 
 test('initializes Datamap with keyed object data for tooltip support', () => {

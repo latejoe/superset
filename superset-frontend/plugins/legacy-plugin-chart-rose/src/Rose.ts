@@ -20,7 +20,10 @@
 /* oxlint-disable no-use-before-define: ["error", { "functions": false }] */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/sort-prop-types */
-import d3 from 'd3';
+import { select } from 'd3-selection';
+import 'd3-transition';
+import { arc as d3Arc } from 'd3-shape';
+import { interpolate } from 'd3-interpolate';
 import PropTypes from 'prop-types';
 import nv from 'nvd3-fork';
 import {
@@ -117,7 +120,7 @@ function Rose(element: HTMLElement, props: RoseProps): void {
     sliceId,
   } = props;
 
-  const div = d3.select(element);
+  const div = select(element);
   div.classed('superset-legacy-chart-rose', true);
 
   const datum = data;
@@ -130,10 +133,10 @@ function Rose(element: HTMLElement, props: RoseProps): void {
   const timeFormat = getTimeFormatter(dateTimeFormat);
   const colorFn = CategoricalColorNamespace.getScale(colorScheme);
 
-  d3.select('.nvtooltip').remove();
+  select('.nvtooltip').remove();
   div.selectAll('*').remove();
 
-  const arc = d3.svg.arc();
+  const arc = d3Arc();
   const legend = nv.models.legend();
   const tooltip = nv.models.tooltip();
   const state = { disabled: datum[times[0]].map(() => false) };
@@ -345,9 +348,9 @@ function Rose(element: HTMLElement, props: RoseProps): void {
 
   function tween(target: ArcDatum, resFunc: (d: ArcDatum) => string) {
     return function doTween(d: ArcDatum) {
-      const interpolate = d3.interpolate(copyArc(d), copyArc(target));
+      const interp = interpolate(copyArc(d), copyArc(target));
 
-      return (t: number) => resFunc(Object.assign(d, interpolate(t)));
+      return (t: number) => resFunc(Object.assign(d, interp(t)));
     };
   }
 
@@ -437,7 +440,7 @@ function Rose(element: HTMLElement, props: RoseProps): void {
 
   function mouseover(this: Element, b: ArcDatum, i: number): void {
     tooltip.data(tooltipData(b, i, datum)).hidden(false);
-    const $this = d3.select(this);
+    const $this = select(this);
     $this.classed('hover', true);
     if (clickId < 0 && !inTransition) {
       $this
@@ -468,7 +471,7 @@ function Rose(element: HTMLElement, props: RoseProps): void {
 
   function mouseout(this: Element, b: ArcDatum, i: number): void {
     tooltip.hidden(true);
-    const $this = d3.select(this);
+    const $this = select(this);
     $this.classed('hover', false);
     if (clickId < 0 && !inTransition) {
       $this
@@ -497,11 +500,11 @@ function Rose(element: HTMLElement, props: RoseProps): void {
     }
   }
 
-  function click(b: ArcDatum, i: number): void {
+  function click(event: MouseEvent, b: ArcDatum, i: number): void {
     if (inTransition) {
       return;
     }
-    const delay = d3.event.altKey ? 3750 : 375;
+    const delay = event.altKey ? 3750 : 375;
     const segments = getSegmentsInTime(i);
     if (clickId < 0) {
       inTransition = true;
@@ -560,7 +563,7 @@ function Rose(element: HTMLElement, props: RoseProps): void {
         .transition()
         .duration(delay)
         .attrTween('d', d => arcTween(arcSt.pie[d.arcId])(d))
-        .each('end', () => {
+        .on('end', () => {
           inTransition = false;
         });
       arcs
@@ -605,7 +608,7 @@ function Rose(element: HTMLElement, props: RoseProps): void {
         .transition()
         .duration(delay)
         .attrTween('d', d => arcTween(arcSt.data[d.arcId])(d))
-        .each('end', () => {
+        .on('end', () => {
           clickId = -1;
           inTransition = false;
         });
@@ -622,10 +625,10 @@ function Rose(element: HTMLElement, props: RoseProps): void {
   ae.on('mouseover', mouseover)
     .on('mouseout', mouseout)
     .on('mousemove', mousemove)
-    .on('click', click);
+    .on('click', (event, d) => click(event, d, d.arcId));
 
   function updateActive(): void {
-    const delay = d3.event.altKey ? 3000 : 300;
+    const delay = 300;
     legendWrap.datum(legendData(datum)).call(legend);
     const nArcSt = computeArcStates(datum);
     inTransition = true;
@@ -636,7 +639,7 @@ function Rose(element: HTMLElement, props: RoseProps): void {
         .transition()
         .duration(delay)
         .attrTween('d', d => arcTween(nArcSt.data[d.arcId])(d))
-        .each('end', () => {
+        .on('end', () => {
           inTransition = false;
           arcSt = nArcSt;
         })
@@ -655,7 +658,7 @@ function Rose(element: HTMLElement, props: RoseProps): void {
             ? arcTween(nArcSt.pie[d.arcId])(d)
             : arcTween(nArcSt.mini[d.arcId])(d),
         )
-        .each('end', () => {
+        .on('end', () => {
           inTransition = false;
           arcSt = nArcSt;
         })

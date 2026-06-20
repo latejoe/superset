@@ -18,8 +18,11 @@
  * under the License.
  */
 /* eslint-disable react/sort-prop-types */
-import d3 from 'd3';
+import { select, pointer } from 'd3-selection';
 import { extent as d3Extent } from 'd3-array';
+import { rgb } from 'd3-color';
+import { geoPath, geoCentroid, geoMercator } from 'd3-geo';
+import { json as d3Json } from 'd3-fetch';
 import {
   ValueFormatter,
   getNumberFormatter,
@@ -101,8 +104,8 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
   });
   const colorFn = (d: GeoFeature) => colorMap[d.properties.ISO] || 'none';
 
-  const path = d3.geo.path();
-  const div = d3.select(container);
+  const path = geoPath();
+  const div = select(container);
   div.classed('superset-legacy-chart-country-map', true);
   div.selectAll('*').remove();
   container.style.height = `${height}px`;
@@ -165,9 +168,9 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
     return '';
   };
 
-  const updatePopupPosition = () => {
+  const updatePopupPosition = (event: MouseEvent) => {
     const svgHeight = svg.node().getBoundingClientRect().height;
-    const [x, y] = d3.mouse(svg.node());
+    const [x, y] = pointer(event, svg.node());
     hoverPopup
       .style('display', 'block')
       .style('top', `${y + 30}px`)
@@ -175,13 +178,13 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
       .classed('popup-at-bottom', y > (svgHeight * 2) / 3);
   };
 
-  const mouseenter = function mouseenter(this: SVGPathElement, d: GeoFeature) {
+  const mouseenter = function mouseenter(this: SVGPathElement, event: MouseEvent, d: GeoFeature) {
     // Darken color
     let c: string = colorFn(d);
     if (c !== 'none') {
-      c = d3.rgb(c).darker().toString();
+      c = rgb(c).darker().toString();
     }
-    d3.select(this).style('fill', c);
+    select(this).style('fill', c);
     // Display information popup
     const result = data.filter(
       region => region.country_id === d.properties.ISO,
@@ -190,24 +193,23 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
     hoverPopup.style('display', 'block').html(
       `<div><strong>${getNameOfRegion(d)}</strong><br>${result.length > 0 ? formatter(result[0].metric) : ''}</div>`,
     );
-    updatePopupPosition();
+    updatePopupPosition(event);
   };
 
-  const mousemove = function mousemove() {
-    updatePopupPosition();
+  const mousemove = function mousemove(event: MouseEvent) {
+    updatePopupPosition(event);
   };
 
   const mouseout = function mouseout(this: SVGPathElement) {
-    d3.select(this).style('fill', colorFn);
+    select(this).style('fill', colorFn);
     hoverPopup.style('display', 'none');
   };
 
   function drawMap(mapData: GeoData) {
     const { features } = mapData;
-    const center = d3.geo.centroid(mapData);
+    const center = geoCentroid(mapData);
     const scale = 100;
-    const projection = d3.geo
-      .mercator()
+    const projection = geoMercator()
       .scale(scale)
       .center(center)
       .translate([width / 2, height / 2]);
@@ -251,23 +253,24 @@ function CountryMap(element: HTMLElement, props: CountryMapProps) {
     if (!url) {
       const countryName =
         countryOptions.find(x => x[0] === country)?.[1] || country;
-      d3.select(element).html(
+      select(element).html(
         `<div class="alert alert-danger">No map data available for ${escapeHtml(countryName)}</div>`,
       );
       return;
     }
-    d3.json(url, (error: unknown, mapData: GeoData) => {
-      if (error) {
-        const countryName =
-          countryOptions.find(x => x[0] === country)?.[1] || country;
-        d3.select(element).html(
-          `<div class="alert alert-danger">Could not load map data for ${escapeHtml(countryName)}</div>`,
-        );
-      } else {
+    d3Json(url).then(
+      (mapData: GeoData) => {
         maps[country] = mapData;
         drawMap(mapData);
-      }
-    });
+      },
+      () => {
+        const countryName =
+          countryOptions.find(x => x[0] === country)?.[1] || country;
+        select(element).html(
+          `<div class="alert alert-danger">Could not load map data for ${escapeHtml(countryName)}</div>`,
+        );
+      },
+    );
   }
 }
 

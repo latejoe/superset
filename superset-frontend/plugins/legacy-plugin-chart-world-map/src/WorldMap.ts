@@ -18,9 +18,10 @@
  */
 // @ts-nocheck
 /* eslint-disable react/sort-prop-types */
-import d3 from 'd3';
+import { select, selectAll } from 'd3-selection';
 import PropTypes from 'prop-types';
 import { extent as d3Extent } from 'd3-array';
+import { scaleLinear } from 'd3-scale';
 import {
   getSequentialSchemeRegistry,
   CategoricalColorNamespace,
@@ -126,16 +127,15 @@ function WorldMap(element: HTMLElement, props: WorldMapProps): void {
     emitCrossFilters,
     formatter,
   } = props;
-  const div = d3.select(element);
+  const div = select(element);
   div.classed('superset-legacy-chart-world-map', true);
   div.selectAll('*').remove();
 
   // Ignore XXX's to get better normalization
   const filteredData = data.filter(d => d.country && d.country !== 'XXX');
 
-  const extRadius = d3.extent(filteredData, d => Math.sqrt(d.m2));
-  const radiusScale = d3.scale
-    .linear()
+  const extRadius = d3Extent(filteredData, d => Math.sqrt(d.m2));
+  const radiusScale = scaleLinear()
     .domain([extRadius[0], extRadius[1]])
     .range([1, maxBubbleSize]);
 
@@ -212,12 +212,11 @@ function WorldMap(element: HTMLElement, props: WorldMapProps): void {
     };
   };
 
-  const handleClick = (source: DatamapSource) => {
+  const handleClick = (event: MouseEvent, source: DatamapSource) => {
     if (!emitCrossFilters) {
       return;
     }
-    const pointerEvent = d3.event;
-    pointerEvent.preventDefault();
+    event.preventDefault();
     getCrossFilterDataMask(source);
 
     const dataMask = getCrossFilterDataMask(source)?.dataMask;
@@ -226,9 +225,8 @@ function WorldMap(element: HTMLElement, props: WorldMapProps): void {
     }
   };
 
-  const handleContextMenu = (source: DatamapSource) => {
-    const pointerEvent = d3.event;
-    pointerEvent.preventDefault();
+  const handleContextMenu = (event: MouseEvent, source: DatamapSource) => {
+    event.preventDefault();
     const key = source.id || source.country;
     const val =
       countryFieldtype === 'name' ? mapData[key]?.name : mapData[key]?.code;
@@ -252,7 +250,7 @@ function WorldMap(element: HTMLElement, props: WorldMapProps): void {
       ];
     }
     if (onContextMenu) {
-      onContextMenu(pointerEvent.clientX, pointerEvent.clientY, {
+      onContextMenu(event.clientX, event.clientY, {
         drillToDetail: drillToDetailFilters,
         crossFilter: getCrossFilterDataMask(source),
         drillBy: { filters: drillByFilters, groupbyFieldName: 'entity' },
@@ -306,32 +304,36 @@ function WorldMap(element: HTMLElement, props: WorldMapProps): void {
     done: datamap => {
       datamap.svg
         .selectAll('.datamaps-subunit')
-        .on('contextmenu', handleContextMenu)
-        .on('click', handleClick)
+        .on('contextmenu', function onContextMenu(event) {
+          handleContextMenu(event, this.__data__);
+        })
+        .on('click', function onClick(event) {
+          handleClick(event, this.__data__);
+        })
         // Use namespaced events to avoid overriding Datamaps' default tooltip handlers
         .on('mouseover.fillPreserve', function onMouseOver() {
           if (inContextMenu) {
             return;
           }
-          const element = d3.select(this);
-          const classes = element.attr('class') || '';
+          const el = select(this);
+          const classes = el.attr('class') || '';
           const countryId = classes.split(' ')[1];
           const countryData = mapData[countryId];
           const originalFill =
             (countryData && countryData.fillColor) || theme.colorBorder;
           // Store original fill color for restoration
-          element.attr('data-original-fill', originalFill);
+          el.attr('data-original-fill', originalFill);
         })
         .on('mouseout.fillPreserve', function onMouseOut() {
           if (inContextMenu) {
             return;
           }
-          const element = d3.select(this);
-          const originalFill = element.attr('data-original-fill');
+          const el = select(this);
+          const originalFill = el.attr('data-original-fill');
           // Restore the original fill color (data-based or default no-data color)
           if (originalFill) {
-            element.style('fill', originalFill);
-            element.attr('data-original-fill', null);
+            el.style('fill', originalFill);
+            el.attr('data-original-fill', null);
           }
         });
     },
@@ -350,7 +352,7 @@ function WorldMap(element: HTMLElement, props: WorldMapProps): void {
   }
 
   if (filterState.selectedValues?.length > 0) {
-    d3.selectAll('path.datamaps-subunit')
+    selectAll('path.datamaps-subunit')
       .filter(
         countryFeature =>
           !filterState.selectedValues.includes(countryFeature.id),
@@ -360,7 +362,7 @@ function WorldMap(element: HTMLElement, props: WorldMapProps): void {
     // hack to ensure that the clicked country's color is preserved
     // sometimes the fill color would get default grey value after applying cross filter
     filterState.selectedValues.forEach(value => {
-      d3.select(`path.datamaps-subunit.${value}`).style(
+      select(`path.datamaps-subunit.${value}`).style(
         'fill',
         mapData[value]?.fillColor,
       );

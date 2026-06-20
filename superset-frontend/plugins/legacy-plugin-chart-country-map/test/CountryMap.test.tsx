@@ -19,21 +19,9 @@
 
 import '@testing-library/jest-dom';
 import { render, fireEvent } from '@testing-library/react';
-import d3 from 'd3';
 import ReactCountryMap from '../src/ReactCountryMap';
 
-// d3 v3 APIs have loose types; cast to allow jest mock operations
-const d3Any = d3 as any;
-
-jest.spyOn(d3Any, 'json');
-
-type Projection = ((...args: unknown[]) => void) & {
-  scale: () => Projection;
-  center: () => Projection;
-  translate: () => Projection;
-};
-
-type PathFn = (() => string) & {
+type PathFn = ((feature: unknown) => string) & {
   projection: jest.Mock;
   bounds: jest.Mock<[[number, number], [number, number]]>;
   centroid: jest.Mock<[number, number]>;
@@ -47,19 +35,36 @@ mockPath.bounds = jest.fn(() => [
 ]);
 mockPath.centroid = jest.fn(() => [50, 50]);
 
-jest.spyOn(d3Any.geo, 'path').mockImplementation(() => mockPath);
+type Projection = ((...args: unknown[]) => void) & {
+  scale: () => Projection;
+  center: () => Projection;
+  translate: () => Projection;
+};
 
-// Mock d3.geo.mercator
-jest.spyOn(d3Any.geo, 'mercator').mockImplementation(() => {
-  const proj = (() => {}) as Projection;
-  proj.scale = () => proj;
-  proj.center = () => proj;
-  proj.translate = () => proj;
-  return proj;
+jest.mock('d3-geo', () => ({
+  geoPath: () => mockPath,
+  geoCentroid: jest.fn(() => [0, 0]),
+  geoMercator: () => {
+    const proj = (() => {}) as unknown as Projection;
+    proj.scale = () => proj;
+    proj.center = () => proj;
+    proj.translate = () => proj;
+    return proj;
+  },
+}));
+
+jest.mock('d3-selection', () => {
+  const actual = jest.requireActual('d3-selection');
+  return {
+    ...actual,
+    pointer: jest.fn(() => [100, 50]),
+  };
 });
 
-// Mock d3.mouse
-jest.spyOn(d3Any, 'mouse').mockReturnValue([100, 50]);
+const mockD3Json = jest.fn();
+jest.mock('d3-fetch', () => ({
+  json: (...args: unknown[]) => mockD3Json(...args),
+}));
 
 const mockMapData = {
   type: 'FeatureCollection',
@@ -72,17 +77,13 @@ const mockMapData = {
   ],
 };
 
-type D3JsonCallback = (error: Error | null, data: unknown) => void;
-
-describe('CountryMap (legacy d3)', () => {
+describe('CountryMap (d3 v7 modular)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test('renders a map after d3.json loads data', async () => {
-    d3Any.json.mockImplementation((_url: string, cb: D3JsonCallback) =>
-      cb(null, mockMapData),
-    );
+  test('renders a map after d3Json loads data', async () => {
+    mockD3Json.mockResolvedValue(mockMapData);
 
     render(
       <ReactCountryMap
@@ -97,16 +98,17 @@ describe('CountryMap (legacy d3)', () => {
       />,
     );
 
-    expect(d3Any.json).toHaveBeenCalledTimes(1);
+    expect(mockD3Json).toHaveBeenCalledTimes(1);
+
+    // Wait for the promise to resolve
+    await new Promise(resolve => { setTimeout(resolve, 0); });
 
     const region = document.querySelector('path.region');
     expect(region).not.toBeNull();
   });
 
-  test('shows tooltip on mouseenter/mousemove/mouseout', async () => {
-    d3Any.json.mockImplementation((_url: string, cb: D3JsonCallback) =>
-      cb(null, mockMapData),
-    );
+  test('shows tooltip on mouseenter/mouseout', async () => {
+    mockD3Json.mockResolvedValue(mockMapData);
 
     render(
       <ReactCountryMap
@@ -120,35 +122,7 @@ describe('CountryMap (legacy d3)', () => {
       />,
     );
 
-    const region = document.querySelector('path.region');
-    expect(region).not.toBeNull();
-
-    const popup = document.querySelector('.hover-popup');
-    expect(popup).not.toBeNull();
-
-    fireEvent.mouseEnter(region!);
-    expect(popup!).toHaveStyle({ display: 'block' });
-
-    fireEvent.mouseOut(region!);
-    expect(popup!).toHaveStyle({ display: 'none' });
-  });
-
-  test('shows tooltip on mouseenter/mousemove/mouseout', async () => {
-    d3Any.json.mockImplementation((_url: string, cb: D3JsonCallback) =>
-      cb(null, mockMapData),
-    );
-
-    render(
-      <ReactCountryMap
-        width={500}
-        height={300}
-        data={[{ country_id: 'CAN', metric: 100 }]}
-        country="canada"
-        linearColorScheme="bnbColors"
-        colorScheme=""
-        formatter={jest.fn().mockReturnValue('100')}
-      />,
-    );
+    await new Promise(resolve => { setTimeout(resolve, 0); });
 
     const region = document.querySelector('path.region');
     expect(region).not.toBeNull();

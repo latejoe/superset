@@ -19,7 +19,10 @@
  * under the License.
  */
 import { kebabCase, throttle } from 'lodash';
-import d3 from 'd3';
+import { select, selectAll } from 'd3-selection';
+import 'd3-transition';
+import { scaleLinear, scaleLog, scaleUtc } from 'd3-scale';
+import { sum, max } from 'd3-array';
 import utc from 'dayjs/plugin/utc';
 import nv from 'nvd3-fork';
 import PropTypes from 'prop-types';
@@ -315,7 +318,7 @@ function nvd3Vis(element, props) {
   }
 
   const drawGraph = function drawGraph() {
-    const d3Element = d3.select(element);
+    const d3Element = select(element);
     d3Element.classed('superset-legacy-chart-nvd3', true);
     d3Element.classed(`superset-legacy-chart-nvd3-${kebabCase(vizType)}`, true);
     let svg = d3Element.select('svg');
@@ -347,7 +350,7 @@ function nvd3Vis(element, props) {
     switch (vizType) {
       case VizType.TimePivot:
         chart = nv.models.lineChart();
-        chart.xScale(d3.time.scale.utc());
+        chart.xScale(scaleUtc());
         chart.interpolate(lineInterpolation);
         break;
 
@@ -370,7 +373,7 @@ function nvd3Vis(element, props) {
           chart.labelType(d => `${d.data.x}: ${numberFormatter(d.data.y)}`);
         } else {
           // pieLabelType in ['key_percent', 'key_value_percent']
-          const total = d3.sum(data, d => d.y);
+          const total = sum(data, d => d.y);
           const percentFormatter = getNumberFormatter(
             NumberFormats.PERCENT_2_POINT,
           );
@@ -402,7 +405,7 @@ function nvd3Vis(element, props) {
 
       case VizType.Compare:
         chart = nv.models.cumulativeLineChart();
-        chart.xScale(d3.time.scale.utc());
+        chart.xScale(scaleUtc());
         chart.useInteractiveGuideline(true);
         chart.xAxis.showMaxMin(false);
         break;
@@ -426,7 +429,7 @@ function nvd3Vis(element, props) {
         chart.pointRange([5, maxBubbleSize ** 2]);
         chart.pointDomain([
           0,
-          d3.max(data, d => d3.max(d.values, v => v.size)),
+          max(data, d => max(d.values, v => v.size)),
         ]);
         break;
 
@@ -495,10 +498,10 @@ function nvd3Vis(element, props) {
     }
 
     if (yIsLogScale) {
-      chart.yScale(d3.scale.log());
+      chart.yScale(scaleLog());
     }
     if (xIsLogScale) {
-      chart.xScale(d3.scale.log());
+      chart.xScale(scaleLog());
     }
 
     let xAxisFormatter;
@@ -803,7 +806,7 @@ function nvd3Vis(element, props) {
         } else if (chart.xAxis.scale) {
           xScale = chart.xAxis.scale();
         } else {
-          xScale = d3.scale.linear();
+          xScale = scaleLinear();
         }
         if (xScale && xScale.clamp) {
           xScale.clamp(true);
@@ -858,8 +861,7 @@ function nvd3Vis(element, props) {
             .forEach((config, index) => {
               const e = applyNativeColumns(config);
               // Add event annotation layer
-              const annotations = d3
-                .select(element)
+              const annotations = select(element)
                 .select('.nv-wrap')
                 .append('g')
                 .attr('class', `nv-event-annotation-layer-${index}`);
@@ -936,8 +938,7 @@ function nvd3Vis(element, props) {
             .forEach((config, index) => {
               const e = applyNativeColumns(config);
               // Add interval annotation layer
-              const annotations = d3
-                .select(element)
+              const annotations = select(element)
                 .select('.nv-wrap')
                 .append('g')
                 .attr('class', `nv-interval-annotation-layer-${index}`);
@@ -1025,12 +1026,12 @@ function nvd3Vis(element, props) {
 
         // Display styles for Time Series Annotations
         chart.dispatch.on('renderEnd.timeseries-annotation', () => {
-          d3.selectAll(
+          selectAll(
             '.slice_container .nv-timeseries-annotation-layer.showMarkerstrue .nv-point',
           )
             .style('stroke-opacity', 1)
             .style('fill-opacity', 1);
-          d3.selectAll(
+          selectAll(
             '.slice_container .nv-timeseries-annotation-layer.hideLinetrue',
           ).style('stroke-width', 0);
         });
