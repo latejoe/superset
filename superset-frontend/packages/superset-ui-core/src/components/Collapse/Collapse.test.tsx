@@ -82,8 +82,7 @@ test('collapses on click', async () => {
 
   await userEvent.click(screen.getAllByRole('button')[0]);
 
-  expect(screen.getByText('Content 1').parentNode).toHaveClass(
-    'ant-collapse-content-hidden',
-  );
+  const panel = screen.getByText('Content 1').closest('.ant-collapse-panel');
+  expect(panel).toHaveClass('ant-collapse-panel-hidden');
   expect(screen.queryByText('Content 2')).not.toBeInTheDocument();
 });
