@@ -660,7 +660,7 @@ describe('CategoricalColorScale', () => {
 
   describe("is compatible with D3's ScaleOrdinal", () => {
     test('passes type check', () => {
-      const scale: ScaleOrdinal<{ toString(): string }, string> =
+      const scale: ScaleOrdinal<{ toString(): string }, string, never> =
         new CategoricalColorScale(['blue', 'red', 'green']);
       expect(scale('pig')).toBe('blue');
     });
