@@ -111,7 +111,7 @@ function Chord(element: HTMLElement, props: ChordProps) {
   const groupPath = group
     .append('path')
     .attr('id', (_d: ChordGroup, i: number) => `group${i}`)
-    .attr('d', (d: ChordGroup) => (arcGenerator(d) as string | null) || '')
+    .attr('d', (d: ChordGroup) => (arcGenerator(d) as unknown as string) || '')
     .style('fill', (d: ChordGroup) => colorFn(nodes[d.index], sliceId));
 
   // Add a text label.
@@ -143,7 +143,7 @@ function Chord(element: HTMLElement, props: ChordProps) {
       chordSelection.classed('fade', p => p !== d);
     })
     .style('fill', (d: D3Chord) => colorFn(nodes[d.source.index], sliceId))
-    .attr('d', (d: D3Chord) => (ribbonGenerator(d) as string | null) || '');
+    .attr('d', (d: D3Chord) => (ribbonGenerator(d) as unknown as string) || '');
 
   // Add an elaborate mouseover title for each chord.
   chordSelection
