@@ -254,7 +254,7 @@ function SearchInput({
   inputRef,
 }: SearchInputProps) {
   return (
-    <Space direction="horizontal" size={4} className="dt-global-filter">
+    <Space orientation="horizontal" size={4} className="dt-global-filter">
       {t('Search')}
       <Input
         aria-label={t('Search %s records', count)}

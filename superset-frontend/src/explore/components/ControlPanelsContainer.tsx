@@ -955,7 +955,7 @@ export const ControlPanelsContainer = (props: ControlPanelsContainerProps) => {
                   {showDatasourceAlert && <DatasourceAlert />}
                   <Collapse
                     defaultActiveKey={expandedQuerySections}
-                    expandIconPosition="end"
+                    expandIconPlacement="end"
                     ghost
                     bordered
                     items={querySections.map(renderControlPanelSection)}
@@ -971,7 +971,7 @@ export const ControlPanelsContainer = (props: ControlPanelsContainerProps) => {
                     children: (
                       <Collapse
                         defaultActiveKey={expandedCustomizeSections}
-                        expandIconPosition="end"
+                        expandIconPlacement="end"
                         ghost
                         bordered
                         items={customizeSections.map(renderControlPanelSection)}
@@ -1020,7 +1020,7 @@ export const ControlPanelsContainer = (props: ControlPanelsContainerProps) => {
                           )}
                         <Collapse
                           defaultActiveKey={expandedMatrixifySections}
-                          expandIconPosition="end"
+                          expandIconPlacement="end"
                           ghost
                           bordered
                           items={matrixifySections.map(

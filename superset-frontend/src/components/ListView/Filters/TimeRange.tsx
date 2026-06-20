@@ -136,7 +136,7 @@ function TimeRangeFilter(
   const theme = useTheme();
 
   // guessedFrame is only used for the initial useState — value is stable at
-  // mount because CompactFilterTrigger uses destroyPopupOnHide, so the panel
+  // mount because CompactFilterTrigger uses destroyOnHidden, so the panel
   // always mounts fresh with the current committed value.
   const guessedFrame = useMemo(() => guessFrame(value), [value]);
   const [frame, setFrame] = useState<FrameType>(guessedFrame);

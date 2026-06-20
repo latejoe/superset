@@ -2085,7 +2085,7 @@ const AlertReportModal: FunctionComponent<AlertReportModalProps> = ({
     >
       <div css={AdditionalStyles}>
         <Collapse
-          expandIconPosition="end"
+          expandIconPlacement="end"
           activeKey={activeCollapsePanel}
           onChange={key => {
             setActiveCollapsePanel(key);

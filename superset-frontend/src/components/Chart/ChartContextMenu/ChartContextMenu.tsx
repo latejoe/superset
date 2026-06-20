@@ -420,9 +420,7 @@ const ChartContextMenu = (
             onClose();
           },
         }}
-        dropdownRender={menu => (
-          <div data-test="chart-context-menu">{menu}</div>
-        )}
+        popupRender={menu => <div data-test="chart-context-menu">{menu}</div>}
         trigger={['click']}
         onOpenChange={value => {
           setVisible(value);

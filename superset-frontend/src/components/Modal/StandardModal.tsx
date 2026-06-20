@@ -37,7 +37,7 @@ interface StandardModalProps {
   children: ReactNode;
   isEditMode?: boolean;
   centered?: boolean;
-  destroyOnClose?: boolean;
+  destroyOnHidden?: boolean;
   maskClosable?: boolean;
   wrapProps?: object;
   contentLoading?: boolean;
@@ -112,7 +112,7 @@ export function StandardModal({
   children,
   isEditMode = false,
   centered = true,
-  destroyOnClose = true,
+  destroyOnHidden = true,
   maskClosable = false,
   wrapProps,
   contentLoading = false,

@@ -36,7 +36,7 @@ export const FiltersOutOfScopeCollapsible = ({
   <Collapse
     ghost
     bordered
-    expandIconPosition="end"
+    expandIconPlacement="end"
     items={[
       {
         key: 'out-of-scope-filters',

@@ -98,7 +98,7 @@ export const InteractiveSkeleton: Story = {
     };
 
     return (
-      <Space direction="vertical" size="middle">
+      <Space orientation="vertical" size="middle">
         Skeleton
         <Skeleton {...args} />
         Avatar
@@ -136,7 +136,7 @@ export const SkeletonStory: Story = {
     };
 
     return (
-      <Space direction="vertical" size="middle">
+      <Space orientation="vertical" size="middle">
         Skeleton
         <Skeleton {...args} />
         Avatar

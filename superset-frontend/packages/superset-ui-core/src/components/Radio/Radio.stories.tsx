@@ -176,7 +176,7 @@ RadioGroupWithOptionsStory.args = {
     {
       value: 1,
       label: (
-        <Space align="center" direction="vertical">
+        <Space align="center" orientation="vertical">
           <Icons.LineChartOutlined
             css={css`
               font-size: 18;
@@ -189,7 +189,7 @@ RadioGroupWithOptionsStory.args = {
     {
       value: 3,
       label: (
-        <Space align="center" direction="vertical">
+        <Space align="center" orientation="vertical">
           <Icons.BarChartOutlined
             css={css`
               font-size: 18;
@@ -202,7 +202,7 @@ RadioGroupWithOptionsStory.args = {
     {
       value: 4,
       label: (
-        <Space align="center" direction="vertical">
+        <Space align="center" orientation="vertical">
           <Icons.PieChartOutlined
             css={css`
               font-size: 18;

@@ -1127,7 +1127,7 @@ const FiltersConfigForm = (
                   onChange={key => {
                     handleActiveFilterPanelChange(key);
                   }}
-                  expandIconPosition="end"
+                  expandIconPlacement="end"
                   key={`native-filter-config-${filterId}`}
                   items={[
                     ...(itemTypeField !== 'filter_time'

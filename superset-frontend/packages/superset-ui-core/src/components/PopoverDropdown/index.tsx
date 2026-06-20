@@ -90,7 +90,7 @@ const PopoverDropdown = (props: PopoverDropdownProps) => {
   return (
     <Dropdown
       trigger={['click']}
-      overlayStyle={{ zIndex: theme.zIndexBase }}
+      styles={{ root: { zIndex: theme.zIndexBase } }}
       menu={{
         onClick: ({ key }: HandleSelectProps) => onChange(key),
         items: options.map(option => ({

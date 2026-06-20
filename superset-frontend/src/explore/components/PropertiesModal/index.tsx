@@ -340,7 +340,7 @@ function PropertiesModal({
       wrapProps={{ 'data-test': 'properties-edit-modal' }}
     >
       <Collapse
-        expandIconPosition="end"
+        expandIconPlacement="end"
         defaultActiveKey="general"
         accordion
         modalMode

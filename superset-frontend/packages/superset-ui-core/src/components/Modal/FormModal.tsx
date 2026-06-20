@@ -31,7 +31,7 @@ export function FormModal({
   children,
   initialValues = {},
   formSubmitHandler,
-  bodyStyle = {},
+  styles: stylesProp = {},
   requiredFields = [],
   name,
 }: FormModalProps) {
@@ -83,7 +83,7 @@ export function FormModal({
       show={show}
       title={title}
       onHide={handleClose}
-      bodyStyle={bodyStyle}
+      styles={stylesProp}
       footer={
         <>
           <Button

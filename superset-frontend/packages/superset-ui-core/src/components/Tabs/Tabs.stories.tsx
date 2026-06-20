@@ -46,7 +46,7 @@ export const InteractiveTabs = (args: TabsProps) => (
 InteractiveTabs.args = {
   defaultActiveKey: '1',
   type: 'line',
-  tabPosition: 'top',
+  tabPlacement: 'top',
   size: 'middle',
   animated: true,
   centered: false,
@@ -60,8 +60,8 @@ InteractiveTabs.argTypes = {
     control: { type: 'inline-radio' },
     options: ['line', 'card', 'editable-card'],
   },
-  tabPosition: {
-    description: 'Position of tabs. Options: top, bottom, left, right.',
+  tabPlacement: {
+    description: 'Placement of tabs. Options: top, bottom, left, right.',
     control: { type: 'inline-radio' },
     options: ['top', 'bottom', 'left', 'right'],
   },
@@ -135,7 +135,7 @@ InteractiveTabs.parameters = {
       {['top', 'bottom', 'left', 'right'].map(pos => (
         <div key={pos}>
           <h4>{pos}</h4>
-          <Tabs tabPosition={pos} defaultActiveKey="1" items={items} />
+          <Tabs tabPlacement={pos} defaultActiveKey="1" items={items} />
         </div>
       ))}
     </div>

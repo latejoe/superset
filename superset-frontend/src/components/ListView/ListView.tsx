@@ -514,27 +514,25 @@ export function ListView<T extends object = any>({
                         .filter(
                           action =>
                             !action.hidden?.(
-                              selectedFlatRows.map(
-                                (r: any) => r.original,
-                              ),
+                              selectedFlatRows.map((r: any) => r.original),
                             ),
                         )
                         .map(action => (
-                        <Button
-                          data-test="bulk-select-action"
-                          data-test-action-key={action.key}
-                          key={action.key}
-                          buttonStyle={action.type}
-                          cta
-                          onClick={() =>
-                            action.onSelect(
-                              selectedFlatRows.map((r: any) => r.original),
-                            )
-                          }
-                        >
-                          {action.name}
-                        </Button>
-                      ))}
+                          <Button
+                            data-test="bulk-select-action"
+                            data-test-action-key={action.key}
+                            key={action.key}
+                            buttonStyle={action.type}
+                            cta
+                            onClick={() =>
+                              action.onSelect(
+                                selectedFlatRows.map((r: any) => r.original),
+                              )
+                            }
+                          >
+                            {action.name}
+                          </Button>
+                        ))}
                       {enableBulkTag && (
                         <span
                           data-test="bulk-select-tag-btn"
@@ -572,7 +570,7 @@ export function ListView<T extends object = any>({
                     onChange={(page: number) => {
                       gotoPage(page - 1);
                     }}
-                    size="default"
+                    size="middle"
                     showSizeChanger={false}
                     showQuickJumper={false}
                     hideOnSinglePage

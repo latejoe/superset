@@ -75,7 +75,7 @@ export default function VerticalRadioControl({
         value={currentValue}
         onChange={e => onChange(e.target.value)}
       >
-        <Space direction="vertical">
+        <Space orientation="vertical">
           {normalizedOptions.map(
             ({ value: val, label, disabled = false, tooltip }) => (
               <Radio key={JSON.stringify(val)} value={val} disabled={disabled}>

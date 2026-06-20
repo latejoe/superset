@@ -729,7 +729,7 @@ export default function VizTypeGallery(props: VizTypeGalleryProps) {
           onClick={clickSelector}
         />
         <Collapse
-          expandIconPosition="end"
+          expandIconPlacement="end"
           ghost
           defaultActiveKey={Sections.Category}
           items={Object.keys(sectionMap).map(sectionId => {

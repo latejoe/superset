@@ -171,7 +171,7 @@ export default function Login() {
                   <Button
                     href={buildProviderLoginUrl(provider.name)}
                     block
-                    iconPosition="start"
+                    iconPlacement="start"
                     icon={getAuthIconElement(provider.name)}
                   >
                     {t('Sign in with')} {capitalize(provider.name)}
@@ -190,7 +190,7 @@ export default function Login() {
                   <Button
                     href={buildProviderLoginUrl(provider.name)}
                     block
-                    iconPosition="start"
+                    iconPlacement="start"
                     icon={getAuthIconElement(provider.name)}
                   >
                     {t('Sign in with')} {capitalize(provider.name)}

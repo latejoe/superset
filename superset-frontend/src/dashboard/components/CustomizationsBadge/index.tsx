@@ -275,18 +275,20 @@ export const CustomizationsBadge = ({ chartId }: CustomizationsBadgeProps) => {
   return (
     <Tooltip
       title={tooltipContent}
-      visible={tooltipVisible}
-      onVisibleChange={setTooltipVisible}
+      open={tooltipVisible}
+      onOpenChange={setTooltipVisible}
       placement="bottom"
-      overlayStyle={{
-        color: theme.colorText,
-        backgroundColor: theme.colorBgContainer,
-        border: `1px solid ${theme.colorBorder}`,
-        boxShadow: theme.boxShadow,
-      }}
-      overlayInnerStyle={{
-        color: theme.colorText,
-        backgroundColor: theme.colorBgContainer,
+      styles={{
+        root: {
+          color: theme.colorText,
+          backgroundColor: theme.colorBgContainer,
+          border: `1px solid ${theme.colorBorder}`,
+          boxShadow: theme.boxShadow,
+        },
+        container: {
+          color: theme.colorText,
+          backgroundColor: theme.colorBgContainer,
+        },
       }}
     >
       <StyledTag

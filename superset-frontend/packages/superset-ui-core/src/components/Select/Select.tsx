@@ -519,7 +519,8 @@ const Select = forwardRef(
               handleSelectAll();
             }}
           >
-            {t('Select all')} {`(${formatNumber('SMART_NUMBER', bulkSelectCounts.selectable)})`}
+            {t('Select all')}{' '}
+            {`(${formatNumber('SMART_NUMBER', bulkSelectCounts.selectable)})`}
           </Button>
           <Button
             type="link"
@@ -536,7 +537,8 @@ const Select = forwardRef(
               handleDeselectAll();
             }}
           >
-            {t('Clear')} {`(${formatNumber('SMART_NUMBER', bulkSelectCounts.deselectable)})`}
+            {t('Clear')}{' '}
+            {`(${formatNumber('SMART_NUMBER', bulkSelectCounts.deselectable)})`}
           </Button>
         </StyledBulkActionsContainer>
       ),
@@ -689,7 +691,12 @@ const Select = forwardRef(
           setSelectValue(value);
         }
       } else {
-        const token = tokenSeparators.find(token => pastedText.includes(token));
+        const separators = Array.isArray(tokenSeparators)
+          ? tokenSeparators
+          : tokenSeparators(pastedText);
+        const token = separators.find((sep: string) =>
+          pastedText.includes(sep),
+        );
         const array = token ? uniq(pastedText.split(token)) : [pastedText];
 
         const newOptions: SelectOptionsType = [];
@@ -796,7 +803,7 @@ const Select = forwardRef(
           oneLine={oneLine}
           popupMatchSelectWidth={oneLine ? dropdownWidth : true}
           css={props.css}
-          dropdownAlign={DROPDOWN_ALIGN_BOTTOM}
+          popupAlign={DROPDOWN_ALIGN_BOTTOM}
           {...props}
           showSearch={shouldShowSearch}
           ref={ref}

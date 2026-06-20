@@ -305,7 +305,7 @@ export default function MatrixifyDimensionControl(
   };
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+    <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
       <div
         onMouseEnter={() => setDimensionHovered(true)}
         onMouseLeave={() => setDimensionHovered(false)}

@@ -588,7 +588,7 @@ test('Theme base theme integration handles cssVar, hashed and inherit properties
     token: {
       colorPrimary: '#2893B3',
     },
-    cssVar: true,
+    cssVar: {},
     hashed: false,
   };
 

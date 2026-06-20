@@ -699,7 +699,7 @@ const PropertiesModal = ({
         initialValues={dashboardInfo}
       >
         <Collapse
-          expandIconPosition="end"
+          expandIconPlacement="end"
           defaultActiveKey="basic"
           accordion
           modalMode

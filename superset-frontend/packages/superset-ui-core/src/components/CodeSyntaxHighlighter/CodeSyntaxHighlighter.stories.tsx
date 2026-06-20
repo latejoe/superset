@@ -152,7 +152,7 @@ export default {
 
 // Gallery showing all supported languages
 export const LanguageGallery = () => (
-  <Space direction="vertical" size="large" style={{ width: '100%' }}>
+  <Space orientation="vertical" size="large" style={{ width: '100%' }}>
     {languages.map(language => (
       <div key={language}>
         <Title
@@ -209,7 +209,7 @@ InteractivePlayground.argTypes = {
 
 // Showcase different styling options
 export const StylingExamples = () => (
-  <Space direction="vertical" size="large" style={{ width: '100%' }}>
+  <Space orientation="vertical" size="large" style={{ width: '100%' }}>
     {/* Default styling */}
     <div>
       <Title level={3}>Default Styling</Title>
@@ -258,7 +258,7 @@ export const StylingExamples = () => (
 
 // Performance and edge cases
 export const EdgeCases = () => (
-  <Space direction="vertical" size="large" style={{ width: '100%' }}>
+  <Space orientation="vertical" size="large" style={{ width: '100%' }}>
     {/* Very long single line */}
     <div>
       <Title level={3}>Very Long Single Line</Title>
@@ -298,13 +298,13 @@ export const EdgeCases = () => (
 
 // Theme testing helper
 export const ThemeShowcase = () => (
-  <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+  <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
     <Paragraph>
       <Text strong>Theme Testing:</Text> Switch between light and dark themes in
       Storybook to see automatic adaptation.
     </Paragraph>
 
-    <Space direction="vertical" size="large" style={{ width: '100%' }}>
+    <Space orientation="vertical" size="large" style={{ width: '100%' }}>
       {languages.map(language => (
         <div key={language}>
           <Title level={4} style={{ textTransform: 'uppercase' }}>

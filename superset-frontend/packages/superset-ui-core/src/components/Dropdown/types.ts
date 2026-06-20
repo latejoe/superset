@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import type React from 'react';
 import type { DropdownProps as AntdDropdownProps } from 'antd';
 import type { ReactElement, ReactNode, FocusEvent, KeyboardEvent } from 'react';
 
@@ -33,6 +34,8 @@ export interface NoAnimationDropdownProps extends AntdDropdownProps {
   children: ReactNode;
   onBlur?: (e: FocusEvent<HTMLDivElement>) => void;
   onKeyDown?: (e: KeyboardEvent<HTMLDivElement>) => void;
+  /** @deprecated Use styles={{ root: ... }} instead */
+  overlayStyle?: React.CSSProperties;
 }
 
 export type DropdownProps = AntdDropdownProps;

@@ -124,7 +124,9 @@ const PanelToolbar = ({
           {extensionPrimaryActions}
         </>
       )}
-      {hasPrimaryActions && hasSecondaryActions && <Divider type="vertical" />}
+      {hasPrimaryActions && hasSecondaryActions && (
+        <Divider orientation="vertical" />
+      )}
       {hasSecondaryActions && (
         <Dropdown
           popupRender={() => (

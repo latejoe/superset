@@ -148,7 +148,7 @@ export default function CompactFilterTrigger({
         children({ isOpen: open, onClose: () => setOpen(false) })
       }
       placement="bottomLeft"
-      destroyPopupOnHide
+      destroyOnHidden
     >
       <Tooltip
         title={tooltipTitle}

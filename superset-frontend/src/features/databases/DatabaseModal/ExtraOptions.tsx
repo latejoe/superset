@@ -134,7 +134,7 @@ const ExtraOptions = ({
 
   return (
     <Collapse
-      expandIconPosition="end"
+      expandIconPlacement="end"
       accordion
       modalMode
       activeKey={activeKey}

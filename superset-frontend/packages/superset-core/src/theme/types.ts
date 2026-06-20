@@ -78,7 +78,7 @@ export type SerializableThemeConfig = {
   algorithm?: ThemeAlgorithmOption;
   hashed?: boolean;
   inherit?: boolean;
-  cssVar?: boolean | { key?: string; prefix?: string };
+  cssVar?: { key?: string; prefix?: string };
 };
 
 /**

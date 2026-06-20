@@ -351,7 +351,7 @@ const DatasetUsageTab = ({
                 pageSize: PAGE_SIZE,
                 onChange: handlePageChange,
                 showSizeChanger: false,
-                size: 'default',
+                size: 'middle',
               }
         }
         loading={loading}

@@ -158,7 +158,7 @@ const ViewQuery: FC<ViewQueryProps> = props => {
   }, [sql]);
 
   return (
-    <Card bodyStyle={{ padding: theme.sizeUnit * 4 }}>
+    <Card styles={{ body: { padding: theme.sizeUnit * 4 } }}>
       <StyledSyntaxContainer key={sql}>
         {!formattedSQL && showFormatSQL ? (
           <Skeleton active />

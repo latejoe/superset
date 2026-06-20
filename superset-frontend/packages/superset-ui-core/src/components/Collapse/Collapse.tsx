@@ -36,9 +36,9 @@ const StyledCollapse = styled((props: CollapseProps) => (
           animateArrows ? 'transform 0.24s' : 'none'};
       }
 
-      ${({ expandIconPosition }) =>
-        expandIconPosition &&
-        expandIconPosition === 'end' &&
+      ${({ expandIconPlacement }) =>
+        expandIconPlacement &&
+        expandIconPlacement === 'end' &&
         `
             .anticon.anticon-right.ant-collapse-arrow > svg {
               transform: rotate(90deg) !important;
@@ -70,9 +70,9 @@ const StyledCollapse = styled((props: CollapseProps) => (
 
   .ant-collapse-item-active {
     .ant-collapse-header {
-      ${({ expandIconPosition }) =>
-        expandIconPosition &&
-        expandIconPosition === 'end' &&
+      ${({ expandIconPlacement }) =>
+        expandIconPlacement &&
+        expandIconPlacement === 'end' &&
         `
             .anticon.anticon-right.ant-collapse-arrow > svg {
               transform: rotate(-90deg) !important;

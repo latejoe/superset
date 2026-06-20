@@ -97,14 +97,18 @@ export const MenuDotsDropdown = ({
 );
 
 export const NoAnimationDropdown = (props: NoAnimationDropdownProps) => {
-  const { children, onBlur, onKeyDown, ...rest } = props;
+  const { children, onBlur, onKeyDown, overlayStyle, ...rest } = props;
   const childrenWithProps = cloneElement(children as ReactElement, {
     onBlur,
     onKeyDown,
   });
 
   return (
-    <AntdDropdown autoFocus overlayStyle={props.overlayStyle} {...rest}>
+    <AntdDropdown
+      autoFocus
+      styles={overlayStyle ? { root: overlayStyle } : undefined}
+      {...rest}
+    >
       {childrenWithProps}
     </AntdDropdown>
   );

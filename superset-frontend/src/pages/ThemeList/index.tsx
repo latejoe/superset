@@ -651,7 +651,11 @@ function ThemesList({
       {themeCurrentlyDeleting && (
         <DeleteModal
           description={
-            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <Space
+              orientation="vertical"
+              size="middle"
+              style={{ width: '100%' }}
+            >
               <div>{t('This action will permanently delete the theme.')}</div>
               <Alert
                 type="warning"
@@ -676,7 +680,7 @@ function ThemesList({
       <ConfirmStatusChange
         title={t('Please confirm')}
         description={
-          <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+          <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
             <div>
               {t('Are you sure you want to delete the selected themes?')}
             </div>

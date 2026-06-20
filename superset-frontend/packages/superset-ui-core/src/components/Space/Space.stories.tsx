@@ -45,7 +45,7 @@ export const InteractiveSpace = (args: SpaceProps) => (
 );
 
 InteractiveSpace.args = {
-  direction: 'horizontal',
+  orientation: 'horizontal',
   size: 'small',
   wrap: false,
 };
@@ -55,7 +55,7 @@ InteractiveSpace.argTypes = {
     control: { type: 'select' },
     options: ['start', 'end', 'center', 'baseline', ''],
   },
-  direction: {
+  orientation: {
     control: { type: 'select' },
     options: ['vertical', 'horizontal'],
   },
@@ -99,7 +99,7 @@ InteractiveSpace.parameters = {
         title: 'Vertical Space',
         code: `function VerticalSpace() {
   return (
-    <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+    <Space orientation="vertical" size="middle" style={{ display: 'flex' }}>
       <Button buttonStyle="primary">Primary</Button>
       <Button buttonStyle="secondary">Secondary</Button>
       <Button buttonStyle="dashed">Dashed</Button>

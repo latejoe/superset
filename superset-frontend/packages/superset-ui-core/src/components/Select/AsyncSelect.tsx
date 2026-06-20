@@ -669,7 +669,12 @@ const AsyncSelect = forwardRef(
           setSelectValue(value);
         }
       } else {
-        const token = tokenSeparators.find(token => pastedText.includes(token));
+        const separators = Array.isArray(tokenSeparators)
+          ? tokenSeparators
+          : tokenSeparators(pastedText);
+        const token = separators.find((sep: string) =>
+          pastedText.includes(sep),
+        );
         const array = token ? uniq(pastedText.split(token)) : [pastedText];
         const values = (
           await Promise.all(array.map(item => getPastedTextValue(item)))

@@ -844,7 +844,7 @@ const SqlEditor: FC<Props> = ({
           maxRow={maxRow}
           defaultQueryLimit={defaultQueryLimit}
         />
-        <Divider type="vertical" />
+        <Divider orientation="vertical" />
         {isFeatureEnabled(FeatureFlag.EstimateQueryCost) &&
           database?.allows_cost_estimate && (
             <EstimateQueryCostButton

@@ -79,7 +79,7 @@ InteractiveProgressBar.argTypes = {
     control: 'color',
     description: 'Color of the progress bar fill.',
   },
-  trailColor: {
+  railColor: {
     control: 'color',
     description: 'Color of the unfilled portion.',
   },
@@ -147,7 +147,7 @@ InteractiveProgressBar.parameters = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <ProgressBar percent={50} strokeColor="#1890ff" />
       <ProgressBar percent={70} strokeColor="#52c41a" />
-      <ProgressBar percent={30} strokeColor="#faad14" trailColor="#f0f0f0" />
+      <ProgressBar percent={30} strokeColor="#faad14" railColor="#f0f0f0" />
       <ProgressBar percent={90} strokeColor="#ff4d4f" />
     </div>
   );
@@ -162,7 +162,7 @@ const commonArgs = {
   percent: 90,
   showInfo: true,
   strokeColor: '#FF0000',
-  trailColor: '#000',
+  railColor: '#000',
   strokeLinecap: 'round',
   type: 'line',
 };
@@ -184,7 +184,7 @@ const commonArgTypes = {
     control: 'color',
     description: 'Color of the progress bar.',
   },
-  trailColor: {
+  railColor: {
     control: 'color',
     description: 'Color of the unfilled portion.',
   },

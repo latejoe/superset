@@ -29,10 +29,9 @@ export const InteractiveDivider = (args: DividerProps) => <Divider {...args} />;
 InteractiveDivider.args = {
   dashed: false,
   variant: 'solid',
-  orientation: 'center',
-  orientationMargin: '',
+  titlePlacement: 'center',
   plain: true,
-  type: 'horizontal',
+  orientation: 'horizontal',
 };
 
 InteractiveDivider.argTypes = {
@@ -41,16 +40,12 @@ InteractiveDivider.argTypes = {
     options: ['dashed', 'dotted', 'solid'],
     description: 'Line style of the divider.',
   },
-  orientation: {
+  titlePlacement: {
     control: { type: 'select' },
-    options: ['left', 'right', 'center'],
+    options: ['left', 'right', 'center', 'start', 'end'],
     description: 'Position of title inside divider.',
   },
-  orientationMargin: {
-    control: { type: 'text' },
-    description: 'Margin from divider edge to title.',
-  },
-  type: {
+  orientation: {
     control: { type: 'select' },
     options: ['horizontal', 'vertical'],
     description: 'Direction of the divider.',
@@ -75,16 +70,16 @@ InteractiveDivider.parameters = {
     liveExample: `function Demo() {
   return (
     <>
-      <p>Horizontal divider with title (orientationMargin applies here):</p>
-      <Divider orientation="left" orientationMargin={0}>Left Title</Divider>
-      <Divider orientation="right" orientationMargin={50}>Right Title</Divider>
+      <p>Horizontal divider with title:</p>
+      <Divider titlePlacement="left" styles={{ content: { margin: 0 } }}>Left Title</Divider>
+      <Divider titlePlacement="right" styles={{ content: { margin: 50 } }}>Right Title</Divider>
       <Divider>Center Title</Divider>
       <p>Vertical divider (use container gap for spacing):</p>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <span>Link</span>
-        <Divider type="vertical" />
+        <Divider orientation="vertical" />
         <span>Link</span>
-        <Divider type="vertical" />
+        <Divider orientation="vertical" />
         <span>Link</span>
       </div>
     </>

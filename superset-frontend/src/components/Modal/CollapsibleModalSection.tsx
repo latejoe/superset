@@ -76,7 +76,7 @@ export function CollapsibleModalSections({
 }: CollapsibleModalSectionsProps) {
   return (
     <Collapse
-      expandIconPosition="end"
+      expandIconPlacement="end"
       defaultActiveKey={defaultActiveKey}
       accordion={accordion}
       modalMode

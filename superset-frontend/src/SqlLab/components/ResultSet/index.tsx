@@ -719,7 +719,7 @@ const ResultSet = ({
               `}
             >
               {renderControls()}
-              <Divider type="vertical" />
+              <Divider orientation="vertical" />
               {showSql && (
                 <>
                   <div
@@ -742,7 +742,7 @@ const ResultSet = ({
                   >
                     {sql}
                   </div>
-                  <Divider type="vertical" />
+                  <Divider orientation="vertical" />
                 </>
               )}
               {renderRowsReturned()}
