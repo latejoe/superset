@@ -387,6 +387,12 @@
     "npm": "^11.13.0"
   },
   "overrides": {
+    "@great-expectations/jsonforms-antd-renderers": {
+      "antd": "$antd"
+    },
+    "@rjsf/antd": {
+      "antd": "$antd"
+    },
     "uuid": "$uuid",
     "core-js": "^3.38.1",
     "puppeteer": "^22.4.1",
