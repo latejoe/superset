@@ -387,7 +387,7 @@ const comboboxSelect = async (
   newElementQuery: Function,
 ) => {
   expect(element).toBeInTheDocument();
-  userEvent.type(element, `${value}{enter}`);
+  await userEvent.type(element, `${value}{enter}`);
   const newElement = newElementQuery();
   expect(newElement).toBeInTheDocument();
 };
@@ -548,7 +548,7 @@ test('opens Alert Condition Section on click', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('alert-condition-panel'));
+  await userEvent.click(screen.getByTestId('alert-condition-panel'));
   const alertConditionHeader = within(
     screen.getByRole('tab', { expanded: true }),
   ).queryByText(/alert condition/i);
@@ -558,7 +558,7 @@ test('renders all Alert Condition fields', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('alert-condition-panel'));
+  await userEvent.click(screen.getByTestId('alert-condition-panel'));
   const database = screen.getByRole('combobox', { name: /database/i });
   const sql = screen.getByRole('textbox');
   const condition = screen.getByRole('combobox', { name: /condition/i });
@@ -572,7 +572,7 @@ test('disables condition threshold if not null condition is selected', async () 
   render(<AlertReportModal {...generateMockedProps(false, true, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('alert-condition-panel'));
+  await userEvent.click(screen.getByTestId('alert-condition-panel'));
   await screen.findByText(/smaller than/i);
   const condition = screen.getByRole('combobox', { name: /condition/i });
   const spinButton = screen.getByRole('spinbutton');
@@ -591,7 +591,7 @@ test('opens Contents Section on click', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   const contentsHeader = within(
     screen.getByRole('tab', { expanded: true }),
   ).queryByText(/contents/i);
@@ -602,7 +602,7 @@ test('renders screenshot options when dashboard is selected', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, true)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
   expect(
     screen.getByRole('combobox', { name: /select content type/i }),
@@ -622,7 +622,7 @@ test('renders tab selection when Dashboard is selected', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, true)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
   expect(
     screen.getByRole('combobox', { name: /select content type/i }),
@@ -637,7 +637,7 @@ test('changes to content options when chart is selected', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, true)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
   const contentTypeSelector = screen.getByRole('combobox', {
     name: /select content type/i,
@@ -656,7 +656,7 @@ test('removes ignore cache checkbox when chart is selected', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, true)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
   expect(
     screen.getByRole('checkbox', {
@@ -682,7 +682,7 @@ test('does not show screenshot width when csv is selected', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test chart/i);
   const contentTypeSelector = screen.getByRole('combobox', {
     name: /select content type/i,
@@ -705,7 +705,7 @@ test('clearing the chart selection resets the combobox value', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test chart/i);
   const chartCombobox = screen.getByRole('combobox', {
     name: /Chart: Test Chart/i,
@@ -729,7 +729,7 @@ test('shows screenshot width when PDF is selected', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test chart/i);
   const contentTypeSelector = screen.getByRole('combobox', {
     name: /select content type/i,
@@ -754,7 +754,7 @@ test('opens Schedule Section on click', async () => {
   render(<AlertReportModal {...generateMockedProps(false, true, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('schedule-panel'));
+  await userEvent.click(screen.getByTestId('schedule-panel'));
   const scheduleHeader = within(
     screen.getByRole('tab', { expanded: true }),
   ).queryAllByText(/schedule/i)[0];
@@ -764,7 +764,7 @@ test('renders default Schedule fields', async () => {
   render(<AlertReportModal {...generateMockedProps(false, false, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('schedule-panel'));
+  await userEvent.click(screen.getByTestId('schedule-panel'));
   const scheduleType = screen.getByRole('combobox', {
     name: /schedule type/i,
   });
@@ -785,23 +785,25 @@ test('renders working timout as report', async () => {
   render(<AlertReportModal {...generateMockedProps(true, false, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('schedule-panel'));
+  await userEvent.click(screen.getByTestId('schedule-panel'));
   expect(screen.getByText(/working timeout/i)).toBeInTheDocument();
 });
 test('renders grace period as alert', async () => {
   render(<AlertReportModal {...generateMockedProps(false, false, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('schedule-panel'));
+  await userEvent.click(screen.getByTestId('schedule-panel'));
   expect(screen.getByText(/grace period/i)).toBeInTheDocument();
 });
 test('shows CRON Expression when CRON is selected', async () => {
   render(<AlertReportModal {...generateMockedProps(true, false, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('schedule-panel'));
-  userEvent.click(screen.getByRole('combobox', { name: /schedule type/i }));
-  userEvent.type(
+  await userEvent.click(screen.getByTestId('schedule-panel'));
+  await userEvent.click(
+    screen.getByRole('combobox', { name: /schedule type/i }),
+  );
+  await userEvent.type(
     screen.getByRole('combobox', { name: /schedule type/i }),
     'cron schedule{enter}',
   );
@@ -812,7 +814,7 @@ test('defaults to day when CRON is not selected', async () => {
   render(<AlertReportModal {...generateMockedProps(true, false, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('schedule-panel'));
+  await userEvent.click(screen.getByTestId('schedule-panel'));
   const day = screen.getByText('day');
   expect(day).toBeInTheDocument();
 });
@@ -822,7 +824,7 @@ test('opens Notification Method Section on click', async () => {
   render(<AlertReportModal {...generateMockedProps(false, false, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('notification-method-panel'));
+  await userEvent.click(screen.getByTestId('notification-method-panel'));
   const notificationMethodHeader = within(
     screen.getByRole('tab', { expanded: true }),
   ).queryAllByText(/notification method/i)[0];
@@ -833,7 +835,7 @@ test('renders all notification fields', async () => {
   render(<AlertReportModal {...generateMockedProps(false, false, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('notification-method-panel'));
+  await userEvent.click(screen.getByTestId('notification-method-panel'));
   const notificationMethod = screen.getByRole('combobox', {
     name: /delivery method/i,
   });
@@ -850,11 +852,11 @@ test('adds another notification method section after clicking add notification m
   render(<AlertReportModal {...generateMockedProps(false, false, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('notification-method-panel'));
+  await userEvent.click(screen.getByTestId('notification-method-panel'));
   const addNotificationMethod = screen.getByText(
     /add another notification method/i,
   );
-  userEvent.click(addNotificationMethod);
+  await userEvent.click(addNotificationMethod);
   expect(
     screen.getAllByRole('combobox', {
       name: /delivery method/i,
@@ -874,11 +876,11 @@ test('removes notification method on clicking trash can', async () => {
   render(<AlertReportModal {...generateMockedProps(false, false, false)} />, {
     useRedux: true,
   });
-  userEvent.click(screen.getByTestId('notification-method-panel'));
+  await userEvent.click(screen.getByTestId('notification-method-panel'));
   const addNotificationMethod = screen.getByText(
     /add another notification method/i,
   );
-  userEvent.click(addNotificationMethod);
+  await userEvent.click(addNotificationMethod);
   await comboboxSelect(
     screen.getAllByRole('combobox', {
       name: /delivery method/i,
@@ -888,7 +890,7 @@ test('removes notification method on clicking trash can', async () => {
   );
   const images = screen.getAllByRole('img');
   const trash = images[images.length - 1];
-  userEvent.click(trash);
+  await userEvent.click(trash);
   expect(
     screen.getAllByRole('combobox', { name: /delivery method/i }).length,
   ).toBe(1);
@@ -899,7 +901,7 @@ test('renders dashboard filter dropdowns', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   const filterOptionDropdown = screen.getByRole('combobox', {
     name: /select filter/i,
   });
@@ -970,7 +972,7 @@ test('dashboard with no tabs disables tab selector', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   const tabSelector = document.querySelector('.ant-select-disabled');
@@ -985,7 +987,7 @@ test('dashboard with no tabs and no filters hides filter add link', async () => 
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   // Wait for tabs fetch to complete
@@ -1033,7 +1035,7 @@ test('dashboard switching resets tab and filter selections', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   // Wait for tabs endpoint call to complete (proves filter data is loaded)
@@ -1066,8 +1068,8 @@ test('dashboard switching resets tab and filter selections', async () => {
   const dashboardSelect = screen.getByRole('combobox', {
     name: /dashboard/i,
   });
-  userEvent.clear(dashboardSelect);
-  userEvent.type(dashboardSelect, 'Other Dashboard{enter}');
+  await userEvent.clear(dashboardSelect);
+  await userEvent.type(dashboardSelect, 'Other Dashboard{enter}');
 
   // Tab selector should reset: "Other Dashboard" has no tabs, so disabled with placeholder
   await waitFor(
@@ -1152,7 +1154,7 @@ test('different dashboard populates its own tabs and filters', async () => {
 
   render(<AlertReportModal {...dash99Props} />, { useRedux: true });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/other dashboard/i);
 
   // Wait for dashboard 99 tabs to load — increase timeout because the
@@ -1200,7 +1202,7 @@ test('dashboard tabs fetch failure shows error toast', async () => {
     store,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   // Tab selector should remain disabled (no tabs loaded)
@@ -1231,7 +1233,7 @@ test('switching content type to chart hides tab and filter sections', async () =
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   // Tab selector and filter dropdowns should be visible for dashboard
@@ -1263,7 +1265,7 @@ test('adding and removing dashboard filter rows', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   // Wait for filter options to load
@@ -1281,7 +1283,7 @@ test('adding and removing dashboard filter rows', async () => {
 
   // Click "Apply another dashboard filter"
   const addFilterButton = screen.getByText(/apply another dashboard filter/i);
-  userEvent.click(addFilterButton);
+  await userEvent.click(addFilterButton);
 
   // Should now have 2 filter rows
   await waitFor(() => {
@@ -1344,7 +1346,7 @@ test('submit includes conditionNotNull without threshold in alert payload', asyn
   );
 
   // Open condition panel and select "not null"
-  userEvent.click(screen.getByTestId('alert-condition-panel'));
+  await userEvent.click(screen.getByTestId('alert-condition-panel'));
   await screen.findByText(/smaller than/i);
   const condition = screen.getByRole('combobox', { name: /condition/i });
   await comboboxSelect(
@@ -1363,7 +1365,7 @@ test('submit includes conditionNotNull without threshold in alert payload', asyn
   await waitFor(() => {
     expect(screen.getByRole('button', { name: /save/i })).toBeEnabled();
   });
-  userEvent.click(screen.getByRole('button', { name: /save/i }));
+  await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
   // Verify the PUT payload
   await waitFor(() => {
@@ -1401,7 +1403,7 @@ test('edit mode submit uses PUT and excludes read-only fields', async () => {
   await waitFor(() => {
     expect(screen.getByRole('button', { name: /save/i })).toBeEnabled();
   });
-  userEvent.click(screen.getByRole('button', { name: /save/i }));
+  await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
   await waitFor(() => {
     const calls = fetchMock.callHistory.calls('put-edit');
@@ -1459,7 +1461,7 @@ test('edit mode preserves extra.dashboard tab/filter state in payload', async ()
     },
     { timeout: 10000 },
   );
-  userEvent.click(screen.getByRole('button', { name: /save/i }));
+  await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
   await waitFor(() => {
     const calls = fetchMock.callHistory.calls('put-extra-dashboard');
@@ -1509,27 +1511,27 @@ test('create mode submits POST and calls onAdd with response', async () => {
   fireEvent.change(nameInput, { target: { value: 'My New Report' } });
 
   // Open contents panel — content type defaults to Dashboard
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByRole('combobox', { name: /select content type/i });
 
   // Switch content type to Chart (default is Dashboard)
   const contentTypeSelect = screen.getByRole('combobox', {
     name: /select content type/i,
   });
-  userEvent.click(contentTypeSelect);
+  await userEvent.click(contentTypeSelect);
   const chartOption = await screen.findByText('Chart');
-  userEvent.click(chartOption);
+  await userEvent.click(chartOption);
 
   // Select a chart from the chart combobox
   const chartSelect = await screen.findByRole('combobox', {
     name: /chart/i,
   });
-  userEvent.type(chartSelect, 'table');
+  await userEvent.type(chartSelect, 'table');
   const tableChart = await screen.findByText('table chart');
-  userEvent.click(tableChart);
+  await userEvent.click(tableChart);
 
   // Open notification panel and set recipient email
-  userEvent.click(screen.getByTestId('notification-method-panel'));
+  await userEvent.click(screen.getByTestId('notification-method-panel'));
   const recipientInput = await screen.findByTestId('recipients');
   fireEvent.change(recipientInput, { target: { value: 'test@example.com' } });
 
@@ -1543,7 +1545,7 @@ test('create mode submits POST and calls onAdd with response', async () => {
   );
 
   // Click Add
-  userEvent.click(screen.getByRole('button', { name: 'Add' }));
+  await userEvent.click(screen.getByRole('button', { name: 'Add' }));
 
   // Verify POST was called (not PUT)
   await waitFor(() => {
@@ -1586,7 +1588,7 @@ test('create mode defaults to dashboard content type with chart null', async () 
   render(<AlertReportModal {...props} />, { useRedux: true });
 
   // Open contents panel
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   const contentTypeSelect = await screen.findByRole('combobox', {
     name: /select content type/i,
   });
@@ -1650,7 +1652,7 @@ test('dashboard content type submits dashboard id and null chart', async () => {
   await waitFor(() => {
     expect(screen.getByRole('button', { name: /save/i })).toBeEnabled();
   });
-  userEvent.click(screen.getByRole('button', { name: /save/i }));
+  await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
   await waitFor(() => {
     const calls = fetchMock.callHistory.calls('put-dashboard-payload');
@@ -1718,7 +1720,7 @@ test('filter reappears in dropdown after clearing with X icon', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   // Wait for tabs endpoint to be called so filter options are populated before
@@ -1753,7 +1755,7 @@ test('filter reappears in dropdown after clearing with X icon', async () => {
     { timeout: 10000 },
   );
 
-  userEvent.click(filterOption!);
+  await userEvent.click(filterOption!);
 
   await waitFor(() => {
     const selectionItem = document.querySelector(
@@ -1775,7 +1777,7 @@ test('filter reappears in dropdown after clearing with X icon', async () => {
     '.ant-select-clear [aria-label="close-circle"]',
   );
   expect(clearIcon).toBeInTheDocument();
-  userEvent.click(clearIcon as Element);
+  await userEvent.click(clearIcon as Element);
 
   await waitFor(() => {
     const selectionItem = document.querySelector(
@@ -1894,7 +1896,7 @@ test('no error toast when anchor tab has no scoped native filters', async () => 
       store,
     });
 
-    userEvent.click(screen.getByTestId('contents-panel'));
+    await userEvent.click(screen.getByTestId('contents-panel'));
     await screen.findByText(/test dashboard/i);
 
     await waitFor(() => {
@@ -1928,7 +1930,7 @@ test('no error toast when anchor tab set and dashboard has zero native filters',
       store,
     });
 
-    userEvent.click(screen.getByTestId('contents-panel'));
+    await userEvent.click(screen.getByTestId('contents-panel'));
     await screen.findByText(/test dashboard/i);
 
     await waitFor(() => {
@@ -1980,7 +1982,7 @@ test('stale JSON array anchor is cleared without crash or toast', async () => {
       store,
     });
 
-    userEvent.click(screen.getByTestId('contents-panel'));
+    await userEvent.click(screen.getByTestId('contents-panel'));
     await screen.findByText(/test dashboard/i);
 
     // Wait for the tabs useEffect to process the stale anchor
@@ -2024,7 +2026,7 @@ test('stale JSON array anchor is cleared without crash or toast', async () => {
 
     const saveButton = screen.getByRole('button', { name: /save/i });
     expect(saveButton).not.toBeDisabled();
-    userEvent.click(saveButton);
+    await userEvent.click(saveButton);
 
     await waitFor(() => {
       const putCalls = fetchMock.callHistory
@@ -2059,7 +2061,7 @@ test('tabs API failure shows danger toast via Redux store', async () => {
       store,
     });
 
-    userEvent.click(screen.getByTestId('contents-panel'));
+    await userEvent.click(screen.getByTestId('contents-panel'));
 
     await waitFor(() => {
       const toasts = (store.getState() as Record<string, unknown>)
@@ -2125,7 +2127,7 @@ test('null all_tabs does not crash or show error toast', async () => {
       store,
     });
 
-    userEvent.click(screen.getByTestId('contents-panel'));
+    await userEvent.click(screen.getByTestId('contents-panel'));
     await screen.findByText(/test dashboard/i);
 
     // Wait for tabs useEffect to complete
@@ -2179,7 +2181,7 @@ test('missing native_filters in tabs response does not crash or show error toast
       store,
     });
 
-    userEvent.click(screen.getByTestId('contents-panel'));
+    await userEvent.click(screen.getByTestId('contents-panel'));
     await screen.findByText(/test dashboard/i);
 
     // Wait for tabs useEffect to complete
@@ -2239,7 +2241,7 @@ test('anchor tab with scoped filters loads filter options correctly', async () =
       store,
     });
 
-    userEvent.click(screen.getByTestId('contents-panel'));
+    await userEvent.click(screen.getByTestId('contents-panel'));
     await screen.findByText(/test dashboard/i);
 
     // Wait for the tabs fetch to complete so filter options are populated
@@ -2294,7 +2296,7 @@ test('edit mode shows friendly filter names instead of raw IDs', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
 
   await waitFor(() => {
     const selectionItem = document.querySelector(
@@ -2321,7 +2323,7 @@ test('edit mode falls back to raw ID when filterName is missing', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
 
   await waitFor(() => {
     const selectionItem = document.querySelector(
@@ -2382,7 +2384,7 @@ test('tabs metadata overwrites seeded filter options', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
 
   // Seeded label from saved data appears before tabs respond
   const filterSelect = screen.getByRole('combobox', {
@@ -2422,7 +2424,7 @@ test('selecting filter triggers chart data request with correct params', async (
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   // Wait for filter dropdown to be available
@@ -2463,7 +2465,7 @@ test('selected filter excluded from other row dropdowns', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   // Wait for tabs endpoint to complete so filter options are populated
@@ -2505,7 +2507,7 @@ test('selected filter excluded from other row dropdowns', async () => {
 
   // Add second filter row
   const addFilterButton = screen.getByText(/apply another dashboard filter/i);
-  userEvent.click(addFilterButton);
+  await userEvent.click(addFilterButton);
 
   // Wait for second row
   await waitFor(() => {
@@ -2553,13 +2555,13 @@ test('invalid CC email blocks submit', async () => {
   );
 
   // Open notification panel and show CC field
-  userEvent.click(screen.getByTestId('notification-method-panel'));
+  await userEvent.click(screen.getByTestId('notification-method-panel'));
   const addCcButton = await screen.findByText(/Add CC Recipients/i);
-  userEvent.click(addCcButton);
+  await userEvent.click(addCcButton);
 
   // Type invalid email in CC field
   const ccInput = await screen.findByTestId('cc');
-  userEvent.type(ccInput, 'not-an-email');
+  await userEvent.type(ccInput, 'not-an-email');
   fireEvent.blur(ccInput);
 
   // Save should now be disabled due to invalid email format
@@ -2583,13 +2585,13 @@ test('invalid BCC email blocks submit', async () => {
   );
 
   // Open notification panel and show BCC field
-  userEvent.click(screen.getByTestId('notification-method-panel'));
+  await userEvent.click(screen.getByTestId('notification-method-panel'));
   const addBccButton = await screen.findByText(/Add BCC Recipients/i);
-  userEvent.click(addBccButton);
+  await userEvent.click(addBccButton);
 
   // Type invalid email in BCC field
   const bccInput = await screen.findByTestId('bcc');
-  userEvent.type(bccInput, 'not-an-email');
+  await userEvent.type(bccInput, 'not-an-email');
   fireEvent.blur(bccInput);
 
   // Save should now be disabled due to invalid email format
@@ -2612,7 +2614,7 @@ test('invalid saved anchor is reset on dashboard load', async () => {
     useRedux: true,
   });
 
-  userEvent.click(screen.getByTestId('contents-panel'));
+  await userEvent.click(screen.getByTestId('contents-panel'));
   await screen.findByText(/test dashboard/i);
 
   // Wait for dashboard tabs to load
@@ -2652,9 +2654,9 @@ test('clearing notification recipients disables submit and prevents API call', a
   expect(screen.getByRole('button', { name: /save/i })).toBeEnabled();
 
   // Open notification panel and clear the recipients field
-  userEvent.click(screen.getByTestId('notification-method-panel'));
+  await userEvent.click(screen.getByTestId('notification-method-panel'));
   const recipientInput = await screen.findByTestId('recipients');
-  userEvent.clear(recipientInput);
+  await userEvent.clear(recipientInput);
   fireEvent.blur(recipientInput);
 
   // Save should be disabled — empty recipients block submission
@@ -2682,7 +2684,7 @@ test('modal reopen resets local state', async () => {
   expect(nameInput).toHaveValue('Temporary Report');
 
   // Click Cancel
-  userEvent.click(screen.getByRole('button', { name: /cancel/i }));
+  await userEvent.click(screen.getByRole('button', { name: /cancel/i }));
 
   // Unmount and remount to simulate reopening
   unmount();

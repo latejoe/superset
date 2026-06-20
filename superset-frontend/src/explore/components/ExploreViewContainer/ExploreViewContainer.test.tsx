@@ -213,7 +213,7 @@ test('reuses the same form_data param when updating', async () => {
   const replaceSpy = jest.spyOn(history, 'replace');
   await waitFor(() => renderWithRouter({ search: SEARCH, history }));
   expect(replaceSpy.mock.calls.length).toBe(1);
-  userEvent.click(screen.getByText('Update chart'));
+  await userEvent.click(screen.getByText('Update chart'));
   await waitFor(() => expect(replaceSpy.mock.calls.length).toBe(2));
   expect(replaceSpy.mock.calls[0]).toEqual(replaceSpy.mock.calls[1]);
   replaceSpy.mockRestore();
@@ -380,7 +380,7 @@ test('shows error indicator when controls have validation errors', async () => {
     'query-error-tooltip-trigger',
   );
 
-  userEvent.hover(errorIndicator);
+  await userEvent.hover(errorIndicator);
 
   const tooltip = await screen.findByRole('tooltip');
   expect(tooltip).toBeInTheDocument();
@@ -419,7 +419,7 @@ test('shows error indicator for multiple controls with validation errors', async
     'query-error-tooltip-trigger',
   );
 
-  userEvent.hover(errorIndicator);
+  await userEvent.hover(errorIndicator);
 
   const tooltip = await screen.findByRole('tooltip');
   expect(tooltip).toBeInTheDocument();
@@ -452,7 +452,7 @@ test('shows error indicator for control with multiple validation errors', async 
     'query-error-tooltip-trigger',
   );
 
-  userEvent.hover(errorIndicator);
+  await userEvent.hover(errorIndicator);
 
   const tooltip = await screen.findByRole('tooltip');
   expect(tooltip).toBeInTheDocument();
@@ -489,7 +489,7 @@ test('shows error indicator with function labels', async () => {
     'query-error-tooltip-trigger',
   );
 
-  userEvent.hover(errorIndicator);
+  await userEvent.hover(errorIndicator);
 
   const tooltip = await screen.findByRole('tooltip');
   expect(tooltip).toBeInTheDocument();

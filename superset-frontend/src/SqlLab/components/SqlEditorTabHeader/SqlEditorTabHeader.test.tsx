@@ -114,7 +114,7 @@ describe('SqlEditorTabHeader', () => {
       const { getByTestId } = setup(defaultQueryEditor, store);
       const dropdown = getByTestId('dropdown-trigger');
 
-      userEvent.click(dropdown);
+      await userEvent.click(dropdown);
     });
 
     test('should dispatch removeQueryEditor action', async () => {

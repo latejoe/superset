@@ -232,7 +232,7 @@ describe('RuleList RTL', () => {
     expect(modal).not.toBeInTheDocument();
 
     const addRuleButton = await screen.findByTestId('add-rule');
-    userEvent.click(addRuleButton);
+    await userEvent.click(addRuleButton);
 
     const modalAfterClick = screen.queryByTestId('rls-modal-title');
     expect(modalAfterClick).toBeInTheDocument();

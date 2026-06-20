@@ -51,13 +51,13 @@ test('renders with default props', () => {
 
 test('renders overlay on click', async () => {
   render(<URLShortLinkButton {...props} />, { useRedux: true });
-  userEvent.click(screen.getByRole('button'));
+  await userEvent.click(screen.getByRole('button'));
   expect(await screen.findByRole('tooltip')).toBeInTheDocument();
 });
 
 test('obtains short url', async () => {
   render(<URLShortLinkButton {...props} />, { useRedux: true });
-  userEvent.click(screen.getByRole('button'));
+  await userEvent.click(screen.getByRole('button'));
   expect(await screen.findByRole('tooltip')).toHaveTextContent(
     PERMALINK_PAYLOAD.url,
   );
@@ -79,7 +79,7 @@ test('creates email anchor', async () => {
   );
 
   const href = `mailto:?Subject=${subject}%20&Body=${content}${PERMALINK_PAYLOAD.url}`;
-  userEvent.click(screen.getByRole('button'));
+  await userEvent.click(screen.getByRole('button'));
   expect(await screen.findByRole('link')).toHaveAttribute('href', href);
 });
 
@@ -94,6 +94,6 @@ test('renders error message on short url error', async () => {
     </>,
     { useRedux: true },
   );
-  userEvent.click(screen.getByRole('button'));
+  await userEvent.click(screen.getByRole('button'));
   expect(await screen.findByRole('alert')).toBeInTheDocument();
 });

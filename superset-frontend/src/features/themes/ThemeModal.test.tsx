@@ -763,8 +763,8 @@ test('disables Format button when JSON is invalid', async () => {
   );
 
   const jsonEditor = screen.getByTestId('json-editor');
-  userEvent.clear(jsonEditor);
-  userEvent.type(jsonEditor, '{invalid json');
+  await userEvent.clear(jsonEditor);
+  await userEvent.type(jsonEditor, '{invalid json');
 
   await waitFor(() => {
     expect(screen.getByRole('button', { name: /format/i })).toBeDisabled();
@@ -806,11 +806,11 @@ test('Format button pretty-prints minified JSON', async () => {
 
   const minifiedJson = '{"token":{"colorPrimary":"#1890ff"}}';
   const jsonEditor = screen.getByTestId('json-editor');
-  userEvent.clear(jsonEditor);
-  userEvent.type(jsonEditor, minifiedJson);
+  await userEvent.clear(jsonEditor);
+  await userEvent.type(jsonEditor, minifiedJson);
 
   const formatButton = screen.getByRole('button', { name: /format/i });
-  userEvent.click(formatButton);
+  await userEvent.click(formatButton);
 
   const expectedFormatted = JSON.stringify(
     { token: { colorPrimary: '#1890ff' } },
@@ -837,7 +837,7 @@ test('Format button is disabled when JSON editor is empty', async () => {
 
   // The editor initializes with `{}` — clear it to reach the empty state
   const jsonEditor = screen.getByTestId('json-editor');
-  userEvent.clear(jsonEditor);
+  await userEvent.clear(jsonEditor);
 
   await waitFor(() => {
     expect(screen.getByRole('button', { name: /format/i })).toBeDisabled();

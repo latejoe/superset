@@ -113,7 +113,8 @@ const findSelectValue = () =>
 const findAllSelectValues = () =>
   waitFor(() => [...getElementsByClassName('.ant-select-selection-item')]);
 
-const clearAll = () => userEvent.click(screen.getByLabelText('close-circle'));
+const clearAll = async () =>
+  await userEvent.click(screen.getByLabelText('close-circle'));
 
 const matchOrder = async (expectedLabels: string[]) => {
   const actualLabels: string[] = [];
@@ -132,7 +133,7 @@ const type = async (text: string, delay?: number, clear = true) => {
   if (clear) {
     await userEvent.clear(select);
   }
-  return userEvent.type(select, text, { delay: delay ?? 10 });
+  return await userEvent.type(select, text, { delay: delay ?? 10 });
 };
 
 const clearTypedText = async () => {
@@ -140,7 +141,7 @@ const clearTypedText = async () => {
   await userEvent.clear(select);
 };
 
-const open = () => waitFor(() => userEvent.click(getSelect()));
+const open = () => waitFor(async () => await userEvent.click(getSelect()));
 
 const reopen = async () => {
   await type('{esc}');

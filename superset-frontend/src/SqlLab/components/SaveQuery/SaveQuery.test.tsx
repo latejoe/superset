@@ -96,14 +96,14 @@ describe('SavedQuery', () => {
     expect(saveBtn).toBeVisible();
   });
 
-  test('renders a save query modal when user clicks save button', () => {
+  test('renders a save query modal when user clicks save button', async () => {
     render(<SaveQuery {...mockedProps} />, {
       useRedux: true,
       store: mockStore(mockState),
     });
 
     const saveBtn = screen.getByRole('button', { name: /save/i });
-    userEvent.click(saveBtn);
+    await userEvent.click(saveBtn);
 
     const saveQueryModalHeader = screen.getByRole('heading', {
       name: /save query/i,
@@ -112,14 +112,14 @@ describe('SavedQuery', () => {
     expect(saveQueryModalHeader).toBeInTheDocument();
   });
 
-  test('renders the save query modal UI', () => {
+  test('renders the save query modal UI', async () => {
     render(<SaveQuery {...mockedProps} />, {
       useRedux: true,
       store: mockStore(mockState),
     });
 
     const saveBtn = screen.getByRole('button', { name: /save/i });
-    userEvent.click(saveBtn);
+    await userEvent.click(saveBtn);
 
     const closeBtn = screen.getByRole('button', { name: /close/i });
     const saveQueryModalHeader = screen.getByRole('heading', {
@@ -147,7 +147,7 @@ describe('SavedQuery', () => {
     expect(cancelBtn).toBeInTheDocument();
   });
 
-  test('renders a "save as new" and "update" button if query already exists', () => {
+  test('renders a "save as new" and "update" button if query already exists', async () => {
     render(<SaveQuery {...mockedProps} />, {
       useRedux: true,
       store: mockStore({
@@ -163,7 +163,7 @@ describe('SavedQuery', () => {
     });
 
     const saveBtn = screen.getByRole('button', { name: /save/i });
-    userEvent.click(saveBtn);
+    await userEvent.click(saveBtn);
 
     const saveAsNewBtn = screen.getByRole('button', { name: /save as new/i });
     const updateBtn = screen.getByRole('button', { name: /update/i });
@@ -196,7 +196,7 @@ describe('SavedQuery', () => {
     });
 
     const saveDatasetMenuItem = await screen.findByLabelText(/save dataset/i);
-    userEvent.click(saveDatasetMenuItem);
+    await userEvent.click(saveDatasetMenuItem);
 
     const saveDatasetHeader = screen.getByText(/save or overwrite dataset/i);
 
@@ -209,7 +209,7 @@ describe('SavedQuery', () => {
       store: mockStore(mockState),
     });
     const saveDatasetMenuItem = await screen.findByLabelText(/save dataset/i);
-    userEvent.click(saveDatasetMenuItem);
+    await userEvent.click(saveDatasetMenuItem);
 
     const closeBtn = screen.getByRole('button', { name: /close/i });
     const saveDatasetHeader = screen.getByText(/save or overwrite dataset/i);
@@ -253,7 +253,7 @@ describe('SavedQuery', () => {
 
     // Open the modal
     const saveBtn = screen.getByRole('button', { name: /save/i });
-    userEvent.click(saveBtn);
+    await userEvent.click(saveBtn);
 
     // Verify modal is open
     expect(
@@ -262,7 +262,7 @@ describe('SavedQuery', () => {
 
     // Click save button in the modal
     const modalSaveBtn = screen.getAllByRole('button', { name: /save/i })[1];
-    userEvent.click(modalSaveBtn);
+    await userEvent.click(modalSaveBtn);
 
     // Modal should still be open while save is in progress
     expect(
@@ -311,7 +311,7 @@ describe('SavedQuery', () => {
 
     // Open the modal
     const saveBtn = screen.getByRole('button', { name: /save/i });
-    userEvent.click(saveBtn);
+    await userEvent.click(saveBtn);
 
     // Modal should open
     expect(
@@ -324,7 +324,7 @@ describe('SavedQuery', () => {
 
     // Click save button
     const modalSaveBtn = screen.getAllByRole('button', { name: /save/i })[1];
-    userEvent.click(modalSaveBtn);
+    await userEvent.click(modalSaveBtn);
 
     // Wait for save to complete and modal to close
     await waitFor(() => {

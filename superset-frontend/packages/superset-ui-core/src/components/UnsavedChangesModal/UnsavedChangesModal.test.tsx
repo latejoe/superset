@@ -63,7 +63,7 @@ test('should only call onConfirmNavigation when clicking the Discard button', as
     name: /discard/i,
   });
 
-  userEvent.click(discardButton);
+  await userEvent.click(discardButton);
 
   expect(mockOnConfirmNavigation).toHaveBeenCalled();
   expect(mockHandleSave).not.toHaveBeenCalled();
@@ -88,7 +88,7 @@ test('should only call handleSave when clicking the Save button', async () => {
     name: /save/i,
   });
 
-  userEvent.click(saveButton);
+  await userEvent.click(saveButton);
 
   expect(mockHandleSave).toHaveBeenCalled();
   expect(mockOnHide).not.toHaveBeenCalled();

@@ -36,7 +36,7 @@ test('should render the config link text', () => {
   expect(screen.getByText('Config link')).toBeInTheDocument();
 });
 
-test('should render the modal on click', () => {
+test('should render the modal on click', async () => {
   const showModal = jest.fn();
   render(
     <FilterConfigurationLink onClick={showModal}>
@@ -47,6 +47,6 @@ test('should render the modal on click', () => {
     },
   );
   const configLink = screen.getByText('Config link');
-  userEvent.click(configLink);
+  await userEvent.click(configLink);
   expect(showModal).toHaveBeenCalled();
 });

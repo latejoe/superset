@@ -104,7 +104,7 @@ test('calls onChange when the SQL expression changes', async () => {
   );
   const sqlEditor = screen.getByRole('textbox');
   expect(sqlEditor).toBeInTheDocument();
-  userEvent.clear(sqlEditor);
+  await userEvent.clear(sqlEditor);
   await userEvent.paste(sqlEditor, input);
   await new Promise(resolve => setTimeout(resolve, 0));
   expect(onChange).toHaveBeenCalledWith(
