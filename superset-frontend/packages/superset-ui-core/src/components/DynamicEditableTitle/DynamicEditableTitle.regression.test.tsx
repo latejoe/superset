@@ -36,7 +36,7 @@ const Harness = ({ initialTitle = 'Original' }: { initialTitle?: string }) => {
 test('rapid typing then backspacing keeps every keystroke', async () => {
   render(<Harness />);
   const input = screen.getByRole('textbox') as HTMLInputElement;
-  userEvent.click(input);
+  await userEvent.click(input);
   await userEvent.type(input, 'abc', { delay: 1 });
   expect(input.value).toBe('Originalabc');
   await userEvent.type(input, '{backspace}{backspace}{backspace}', {
@@ -82,7 +82,7 @@ test('prop changes mid-edit do not clobber unsaved typing', async () => {
   };
   const { rerender } = render(<DynamicEditableTitle {...props} title="Foo" />);
   const input = screen.getByRole('textbox') as HTMLInputElement;
-  userEvent.click(input);
+  await userEvent.click(input);
   await userEvent.type(input, 'X', { delay: 1 });
   expect(input.value).toBe('FooX');
   rerender(<DynamicEditableTitle {...props} title="Bar" />);
@@ -94,7 +94,7 @@ test('prop changes mid-edit do not clobber unsaved typing', async () => {
   expect(onSave).toHaveBeenCalledWith('FooX');
 });
 
-test('passive focus then parent-driven title change then blur does not revert', () => {
+test('passive focus then parent-driven title change then blur does not revert', async () => {
   // Phantom-revert scenario: user clicks the input but does not type, the
   // parent autosaves a new title from elsewhere, then the user blurs. The
   // component must NOT call onSave with the stale local value, otherwise it
@@ -108,7 +108,7 @@ test('passive focus then parent-driven title change then blur does not revert', 
   };
   const { rerender } = render(<DynamicEditableTitle {...props} title="Foo" />);
   const input = screen.getByRole('textbox') as HTMLInputElement;
-  userEvent.click(input);
+  await userEvent.click(input);
   rerender(<DynamicEditableTitle {...props} title="Bar" />);
   fireEvent.blur(input);
   expect(onSave).not.toHaveBeenCalled();

@@ -46,19 +46,19 @@ function setup(
   );
 }
 
-test('DateFilter with default props', () => {
+test('DateFilter with default props', async () => {
   render(setup());
   // label
   expect(screen.getByText(NO_TIME_RANGE)).toBeInTheDocument();
 
   // should be popover by default
-  userEvent.click(screen.getByText(NO_TIME_RANGE));
+  await userEvent.click(screen.getByText(NO_TIME_RANGE));
   expect(
     screen.getByTestId(DateFilterTestKey.PopoverOverlay),
   ).toBeInTheDocument();
 });
 
-test('DateFilter should be applied the global config time_filter from the store', () => {
+test('DateFilter should be applied the global config time_filter from the store', async () => {
   render(
     setup(
       defaultProps,
@@ -70,43 +70,43 @@ test('DateFilter should be applied the global config time_filter from the store'
   // the label should be 'Last week'
   expect(screen.getByText('Last week')).toBeInTheDocument();
 
-  userEvent.click(screen.getByText('Last week'));
+  await userEvent.click(screen.getByText('Last week'));
   expect(screen.getByTestId(DateFilterTestKey.CommonFrame)).toBeInTheDocument();
 });
 
-test('Open and close popover', () => {
+test('Open and close popover', async () => {
   render(setup());
 
   // click "Cancel"
-  userEvent.click(screen.getByText(NO_TIME_RANGE));
+  await userEvent.click(screen.getByText(NO_TIME_RANGE));
   expect(defaultProps.onOpenPopover).toHaveBeenCalled();
   expect(screen.getByText('Edit time range')).toBeInTheDocument();
-  userEvent.click(screen.getByText('CANCEL'));
+  await userEvent.click(screen.getByText('CANCEL'));
   expect(defaultProps.onClosePopover).toHaveBeenCalled();
   expect(screen.queryByText('Edit time range')).not.toBeInTheDocument();
 
   // click "Apply"
-  userEvent.click(screen.getByText(NO_TIME_RANGE));
+  await userEvent.click(screen.getByText(NO_TIME_RANGE));
   expect(defaultProps.onOpenPopover).toHaveBeenCalled();
   expect(screen.getByText('Edit time range')).toBeInTheDocument();
-  userEvent.click(screen.getByText('APPLY'));
+  await userEvent.click(screen.getByText('APPLY'));
   expect(defaultProps.onClosePopover).toHaveBeenCalled();
   expect(screen.queryByText('Edit time range')).not.toBeInTheDocument();
 });
 
-test('DateFilter popover should attach to document.body when not overflowing', () => {
+test('DateFilter popover should attach to document.body when not overflowing', async () => {
   render(setup({ ...defaultProps, isOverflowingFilterBar: false }));
 
-  userEvent.click(screen.getByText(NO_TIME_RANGE));
+  await userEvent.click(screen.getByText(NO_TIME_RANGE));
 
   const popover = document.querySelector('.time-range-popover');
   expect(popover?.parentElement).toBe(document.body);
 });
 
-test('DateFilter popover should attach to parent node when overflowing in filter bar', () => {
+test('DateFilter popover should attach to parent node when overflowing in filter bar', async () => {
   render(setup({ ...defaultProps, isOverflowingFilterBar: true }));
 
-  userEvent.click(screen.getByText(NO_TIME_RANGE));
+  await userEvent.click(screen.getByText(NO_TIME_RANGE));
 
   const popover = document.querySelector('.time-range-popover');
   const trigger = screen.getByTestId(DateFilterTestKey.PopoverOverlay);
@@ -114,21 +114,21 @@ test('DateFilter popover should attach to parent node when overflowing in filter
   expect(popover?.parentElement).toBe(trigger.parentElement);
 });
 
-test('DateFilter should properly handle isOverflowingFilterBar prop changes', () => {
+test('DateFilter should properly handle isOverflowingFilterBar prop changes', async () => {
   const { rerender } = render(
     setup({ ...defaultProps, isOverflowingFilterBar: false }),
   );
 
   // When not overflowing, popover should attach to document.body
-  userEvent.click(screen.getByText(NO_TIME_RANGE));
+  await userEvent.click(screen.getByText(NO_TIME_RANGE));
   const popover = document.querySelector('.time-range-popover');
   expect(popover?.parentElement).toBe(document.body);
 
-  userEvent.click(screen.getByText('CANCEL'));
+  await userEvent.click(screen.getByText('CANCEL'));
 
   // When overflowing, popover should attach to parent node
   rerender(setup({ ...defaultProps, isOverflowingFilterBar: true }));
-  userEvent.click(screen.getByText(NO_TIME_RANGE));
+  await userEvent.click(screen.getByText(NO_TIME_RANGE));
 
   const popoverAfterRerender = document.querySelector('.time-range-popover');
   const trigger = screen.getByTestId(DateFilterTestKey.PopoverOverlay);

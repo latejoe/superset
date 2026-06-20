@@ -63,14 +63,14 @@ afterEach(() => {
 
 const getSelect = () => screen.getByRole('combobox', { name: /dataset/i });
 
-const openSelect = () => {
-  userEvent.click(getSelect());
+const openSelect = async () => {
+  await userEvent.click(getSelect());
 };
 
 const typeIntoSelect = async (text: string) => {
   const select = getSelect();
-  userEvent.clear(select);
-  return userEvent.type(select, text, { delay: 10 });
+  await userEvent.clear(select);
+  return await userEvent.type(select, text, { delay: 10 });
 };
 
 const findOption = (text: string) =>
@@ -175,7 +175,7 @@ test('calls onChange when a dataset is selected', async () => {
   openSelect();
 
   const option = await findOption('birth_names');
-  userEvent.click(option);
+  await userEvent.click(option);
 
   await waitFor(() => {
     expect(mockOnChange).toHaveBeenCalled();
@@ -194,7 +194,7 @@ test('includes table_name field in option data structure', async () => {
   openSelect();
 
   const option = await findOption('birth_names');
-  userEvent.click(option);
+  await userEvent.click(option);
 
   await waitFor(() => {
     expect(mockOnChange).toHaveBeenCalled();

@@ -75,11 +75,11 @@ test('renders an overlay trigger wrapper for the label', () => {
 
 test('overwrites the adhocMetric in state with onLabelChange', async () => {
   setup({});
-  userEvent.click(screen.getByText('SUM(value)'));
-  userEvent.click(screen.getByTestId(/AdhocMetricEditTitle#trigger/i));
+  await userEvent.click(screen.getByText('SUM(value)'));
+  await userEvent.click(screen.getByTestId(/AdhocMetricEditTitle#trigger/i));
   const labelInput = await screen.findByTestId(/AdhocMetricEditTitle#input/i);
-  userEvent.clear(labelInput);
-  userEvent.type(labelInput, 'new label');
+  await userEvent.clear(labelInput);
+  await userEvent.type(labelInput, 'new label');
   expect(labelInput).toHaveValue('new label');
   fireEvent.keyPress(labelInput, {
     key: 'Enter',
@@ -90,20 +90,20 @@ test('overwrites the adhocMetric in state with onLabelChange', async () => {
 
 test('returns to default labels when the custom label is cleared', async () => {
   setup({});
-  userEvent.click(screen.getByText('SUM(value)'));
-  userEvent.click(screen.getByTestId(/AdhocMetricEditTitle#trigger/i));
+  await userEvent.click(screen.getByText('SUM(value)'));
+  await userEvent.click(screen.getByTestId(/AdhocMetricEditTitle#trigger/i));
   const labelInput = await screen.findByTestId(/AdhocMetricEditTitle#input/i);
-  userEvent.clear(labelInput);
-  userEvent.type(labelInput, 'new label');
+  await userEvent.clear(labelInput);
+  await userEvent.type(labelInput, 'new label');
   fireEvent.keyPress(labelInput, {
     key: 'Enter',
     charCode: 13,
   });
   expect(labelInput).not.toBeInTheDocument();
   expect(screen.getByText(/new label/i)).toBeInTheDocument();
-  userEvent.click(screen.getByTestId(/AdhocMetricEditTitle#trigger/i));
+  await userEvent.click(screen.getByTestId(/AdhocMetricEditTitle#trigger/i));
   expect(screen.getByPlaceholderText(/new label/i)).toBeInTheDocument();
-  userEvent.clear(labelInput);
+  await userEvent.clear(labelInput);
   fireEvent.keyPress(labelInput, {
     key: 'Enter',
     charCode: 13,

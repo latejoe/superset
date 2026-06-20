@@ -180,8 +180,8 @@ describe('SelectFilterPlugin', () => {
     });
 
     const filterSelect = screen.getAllByRole('combobox')[0];
-    userEvent.click(filterSelect);
-    userEvent.click(screen.getByTitle('girl'));
+    await userEvent.click(filterSelect);
+    await userEvent.click(screen.getByTitle('girl'));
     expect(
       await screen.findByRole('option', { name: /girl/i }),
     ).toBeInTheDocument();
@@ -203,9 +203,9 @@ describe('SelectFilterPlugin', () => {
     });
   });
 
-  test('Remove multiple values when required', () => {
+  test('Remove multiple values when required', async () => {
     getWrapper();
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('img', {
         name: /close-circle/i,
         hidden: true,
@@ -229,9 +229,9 @@ describe('SelectFilterPlugin', () => {
     });
   });
 
-  test('Remove multiple values when not required', () => {
+  test('Remove multiple values when not required', async () => {
     getWrapper({ enableEmptyFilter: false });
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('img', {
         name: /close-circle/i,
         hidden: true,
@@ -252,10 +252,10 @@ describe('SelectFilterPlugin', () => {
 
     // Get the main filter select (second combobox)
     const filterSelect = screen.getAllByRole('combobox')[1];
-    userEvent.click(filterSelect);
+    await userEvent.click(filterSelect);
 
     expect(await screen.findByTitle('girl')).toBeInTheDocument();
-    userEvent.click(screen.getByTitle('girl'));
+    await userEvent.click(screen.getByTitle('girl'));
     expect(setDataMask).toHaveBeenCalledWith({
       extraFormData: {
         filters: [
@@ -277,9 +277,9 @@ describe('SelectFilterPlugin', () => {
   test('Select single null (empty) value', async () => {
     getWrapper();
     const filterSelect = screen.getAllByRole('combobox')[0];
-    userEvent.click(filterSelect);
+    await userEvent.click(filterSelect);
     expect(await screen.findByRole('combobox')).toBeInTheDocument();
-    userEvent.click(screen.getByTitle(NULL_STRING));
+    await userEvent.click(screen.getByTitle(NULL_STRING));
     expect(setDataMask).toHaveBeenLastCalledWith({
       extraFormData: {
         filters: [
@@ -301,9 +301,9 @@ describe('SelectFilterPlugin', () => {
   test('receives the correct filter when search all options', async () => {
     getWrapper({ searchAllOptions: true, multiSelect: false });
     const filterSelect = screen.getAllByRole('combobox')[0];
-    userEvent.click(filterSelect);
+    await userEvent.click(filterSelect);
     expect(await screen.findByRole('combobox')).toBeInTheDocument();
-    userEvent.click(screen.getByTitle('girl'));
+    await userEvent.click(screen.getByTitle('girl'));
     expect(setDataMask).toHaveBeenLastCalledWith(
       expect.objectContaining({
         extraFormData: {
@@ -322,10 +322,10 @@ describe('SelectFilterPlugin', () => {
   test('number of fired queries when searching', async () => {
     getWrapper({ searchAllOptions: true });
     const filterSelect = screen.getAllByRole('combobox')[0];
-    userEvent.click(filterSelect);
+    await userEvent.click(filterSelect);
     expect(await screen.findByRole('combobox')).toBeInTheDocument();
     await userEvent.type(screen.getByRole('combobox'), 'a');
-    userEvent.tab();
+    await userEvent.tab();
     expect(setDataMask).toHaveBeenCalledTimes(2);
   });
 
@@ -368,7 +368,7 @@ describe('SelectFilterPlugin', () => {
       },
     );
     const filterSelect = screen.getAllByRole('combobox')[0];
-    userEvent.click(filterSelect);
+    await userEvent.click(filterSelect);
     expect(await screen.findByRole('combobox')).toBeInTheDocument();
     await userEvent.type(screen.getByRole('combobox'), '1');
     expect(
@@ -393,10 +393,10 @@ describe('SelectFilterPlugin', () => {
     expect(isNotSelect).toBeInTheDocument();
 
     // Click to open dropdown
-    userEvent.click(isNotSelect);
+    await userEvent.click(isNotSelect);
 
     // Click "is" option
-    userEvent.click(screen.getByText('is'));
+    await userEvent.click(screen.getByText('is'));
 
     // Should update excludeFilterValues to false
     expect(setDataMask).toHaveBeenCalledWith(
@@ -408,19 +408,19 @@ describe('SelectFilterPlugin', () => {
     );
   });
 
-  test('Should not allow for new values when creatable is false', () => {
+  test('Should not allow for new values when creatable is false', async () => {
     getWrapper({ creatable: false });
-    userEvent.type(screen.getByRole('combobox'), 'new value');
+    await userEvent.type(screen.getByRole('combobox'), 'new value');
     expect(screen.queryByTitle('new value')).not.toBeInTheDocument();
   });
 
   test('Should allow for new values when creatable is true', async () => {
     getWrapper({ creatable: true });
-    userEvent.type(screen.getByRole('combobox'), 'new value');
+    await userEvent.type(screen.getByRole('combobox'), 'new value');
     expect(await screen.findByTitle('new value')).toBeInTheDocument();
   });
 
-  test('preserves backend order when sortMetric is specified', () => {
+  test('preserves backend order when sortMetric is specified', async () => {
     const testData = [
       { gender: 'zebra' },
       { gender: 'alpha' },
@@ -484,7 +484,7 @@ describe('SelectFilterPlugin', () => {
     );
 
     const filterSelect = screen.getAllByRole('combobox')[0];
-    userEvent.click(filterSelect);
+    await userEvent.click(filterSelect);
 
     // When sortMetric is specified, options should appear in the original data order
     // (zebra, alpha, beta) not alphabetically sorted
@@ -494,7 +494,7 @@ describe('SelectFilterPlugin', () => {
     expect(options[2]).toHaveTextContent('beta');
   });
 
-  test('applies alphabetical sorting when sortMetric is not specified', () => {
+  test('applies alphabetical sorting when sortMetric is not specified', async () => {
     const testData = [
       { gender: 'zebra' },
       { gender: 'alpha' },
@@ -558,7 +558,7 @@ describe('SelectFilterPlugin', () => {
     );
 
     const filterSelect = screen.getAllByRole('combobox')[0];
-    userEvent.click(filterSelect);
+    await userEvent.click(filterSelect);
 
     // When sortMetric is not specified, options should be sorted alphabetically
     // (alpha, beta, zebra)
@@ -568,7 +568,7 @@ describe('SelectFilterPlugin', () => {
     expect(options[2]).toHaveTextContent('zebra');
   });
 
-  test('applies descending alphabetical sorting when sortAscending is false and no sortMetric', () => {
+  test('applies descending alphabetical sorting when sortAscending is false and no sortMetric', async () => {
     const testData = [
       { gender: 'zebra' },
       { gender: 'alpha' },
@@ -632,7 +632,7 @@ describe('SelectFilterPlugin', () => {
     );
 
     const filterSelect = screen.getAllByRole('combobox')[0];
-    userEvent.click(filterSelect);
+    await userEvent.click(filterSelect);
 
     // When sortAscending is false and no sortMetric, options should be sorted
     // in descending alphabetical order (zebra, beta, alpha)
@@ -642,7 +642,7 @@ describe('SelectFilterPlugin', () => {
     expect(options[2]).toHaveTextContent('alpha');
   });
 
-  test('preserves backend order even when sortAscending is false and sortMetric is specified', () => {
+  test('preserves backend order even when sortAscending is false and sortMetric is specified', async () => {
     const testData = [
       { gender: 'zebra' },
       { gender: 'alpha' },
@@ -706,7 +706,7 @@ describe('SelectFilterPlugin', () => {
     );
 
     const filterSelect = screen.getAllByRole('combobox')[0];
-    userEvent.click(filterSelect);
+    await userEvent.click(filterSelect);
 
     // When sortMetric is specified, original order should be preserved regardless
     // of sortAscending value (zebra, alpha, beta)
@@ -769,10 +769,10 @@ test('Select boolean FALSE value in single-select mode', async () => {
   );
 
   const filterSelect = screen.getByRole('combobox');
-  userEvent.click(filterSelect);
+  await userEvent.click(filterSelect);
 
   const falseOption = await screen.findByRole('option', { name: /false/i });
-  userEvent.click(falseOption);
+  await userEvent.click(falseOption);
 
   await waitFor(() => {
     expect(setDataMaskMock).toHaveBeenCalledWith(
@@ -846,10 +846,10 @@ test('Select boolean TRUE value in single-select mode', async () => {
   );
 
   const filterSelect = screen.getByRole('combobox');
-  userEvent.click(filterSelect);
+  await userEvent.click(filterSelect);
 
   const trueOption = await screen.findByRole('option', { name: /true/i });
-  userEvent.click(trueOption);
+  await userEvent.click(trueOption);
 
   await waitFor(() => {
     expect(setDataMaskMock).toHaveBeenCalledWith(
@@ -923,10 +923,10 @@ test('Select both boolean values in multi-select mode', async () => {
   );
 
   const filterSelect = screen.getByRole('combobox');
-  userEvent.click(filterSelect);
+  await userEvent.click(filterSelect);
 
   const falseOption = await screen.findByRole('option', { name: /false/i });
-  userEvent.click(falseOption);
+  await userEvent.click(falseOption);
 
   await waitFor(() => {
     expect(setDataMaskMock).toHaveBeenCalledWith(
@@ -1000,10 +1000,10 @@ test('Select boolean filter with null values', async () => {
   );
 
   const filterSelect = screen.getByRole('combobox');
-  userEvent.click(filterSelect);
+  await userEvent.click(filterSelect);
 
   const nullOption = await screen.findByRole('option', { name: NULL_STRING });
-  userEvent.click(nullOption);
+  await userEvent.click(nullOption);
 
   await waitFor(() => {
     expect(setDataMaskMock).toHaveBeenCalledWith(
@@ -1077,7 +1077,7 @@ test('Clear boolean FALSE value', async () => {
     },
   );
 
-  userEvent.click(
+  await userEvent.click(
     screen.getByRole('img', {
       name: /close-circle/i,
       hidden: true,
@@ -1148,7 +1148,7 @@ test('Clear boolean TRUE value', async () => {
     },
   );
 
-  userEvent.click(
+  await userEvent.click(
     screen.getByRole('img', {
       name: /close-circle/i,
       hidden: true,

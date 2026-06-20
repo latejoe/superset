@@ -57,7 +57,7 @@ describe('DataTablesPane', () => {
     expect(
       screen.queryByLabelText('Collapse data panel'),
     ).not.toBeInTheDocument();
-    userEvent.click(screen.getByLabelText('Expand data panel'));
+    await userEvent.click(screen.getByLabelText('Expand data panel'));
     expect(await screen.findByLabelText('Collapse data panel')).toBeVisible();
     expect(
       screen.queryByLabelText('Expand data panel'),
@@ -69,7 +69,7 @@ describe('DataTablesPane', () => {
     render(<DataTablesPane {...props} />, {
       useRedux: true,
     });
-    userEvent.click(screen.getByText('Results'));
+    await userEvent.click(screen.getByText('Results'));
     expect(
       await screen.findByText('0 rows', undefined, { timeout: 5000 }),
     ).toBeVisible();
@@ -82,7 +82,7 @@ describe('DataTablesPane', () => {
     render(<DataTablesPane {...props} />, {
       useRedux: true,
     });
-    userEvent.click(screen.getByText('Samples'));
+    await userEvent.click(screen.getByText('Samples'));
     expect(
       await screen.findByText('0 rows', undefined, { timeout: 5000 }),
     ).toBeVisible();
@@ -120,7 +120,7 @@ describe('DataTablesPane', () => {
         },
       },
     });
-    userEvent.click(screen.getByText('Results'));
+    await userEvent.click(screen.getByText('Results'));
     expect(await screen.findByText('1 row')).toBeVisible();
 
     await userEvent.click(screen.getByLabelText('Copy'));
@@ -167,7 +167,7 @@ describe('DataTablesPane', () => {
         },
       },
     });
-    userEvent.click(screen.getByText('Results'));
+    await userEvent.click(screen.getByText('Results'));
     expect(await screen.findByText('1 row')).toBeVisible();
     const copyButton = screen.getByLabelText('Copy');
     expect(copyButton).toHaveAttribute('aria-disabled', 'true');
@@ -205,7 +205,7 @@ describe('DataTablesPane', () => {
     render(<DataTablesPane {...props} />, {
       useRedux: true,
     });
-    userEvent.click(screen.getByText('Results'));
+    await userEvent.click(screen.getByText('Results'));
     expect(await screen.findByText('2 rows')).toBeVisible();
 
     expect(screen.getByText('Action')).toBeVisible();
@@ -258,7 +258,7 @@ describe('DataTablesPane', () => {
 
     const props = createDataTablesPaneProps(111);
     render(<DataTablesPane {...props} />, { useRedux: true });
-    userEvent.click(screen.getByText('Results'));
+    await userEvent.click(screen.getByText('Results'));
 
     expect(await screen.findByText('plain_column')).toBeVisible();
     expect(screen.getByText('revenue (contribution)')).toBeVisible();

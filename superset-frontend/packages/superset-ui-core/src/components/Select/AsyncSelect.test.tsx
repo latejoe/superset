@@ -124,7 +124,8 @@ const findSelectValue = () =>
 const findAllSelectValues = () =>
   waitFor(() => getElementsByClassName('.ant-select-selection-item'));
 
-const clearAll = () => userEvent.click(screen.getByLabelText('close-circle'));
+const clearAll = async () =>
+  await userEvent.click(screen.getByLabelText('close-circle'));
 
 const matchOrder = async (expectedLabels: string[]) => {
   const actualLabels: string[] = [];
@@ -141,10 +142,10 @@ const matchOrder = async (expectedLabels: string[]) => {
 const type = async (text: string) => {
   const select = getSelect();
   await userEvent.clear(select);
-  return userEvent.type(select, text, { delay: 10 });
+  return await userEvent.type(select, text, { delay: 10 });
 };
 
-const open = () => waitFor(() => userEvent.click(getSelect()));
+const open = () => waitFor(async () => await userEvent.click(getSelect()));
 
 test('displays a header', async () => {
   const headerText = 'Header';
@@ -513,7 +514,7 @@ test('opens the select without any data', async () => {
 
 test('displays the loading indicator when opening', async () => {
   render(<AsyncSelect {...defaultProps} />);
-  userEvent.click(getSelect());
+  await userEvent.click(getSelect());
 
   await waitFor(async () => {
     expect(screen.getByText(LOADING)).toBeInTheDocument();

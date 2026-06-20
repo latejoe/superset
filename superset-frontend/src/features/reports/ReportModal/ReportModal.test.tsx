@@ -64,13 +64,13 @@ beforeEach(() => {
   );
 });
 
-test('inputs respond correctly', () => {
+test('inputs respond correctly', async () => {
   render(<ReportModal {...defaultProps} />, { useRedux: true });
   // ----- Report name textbox
   const reportNameTextbox = screen.getByTestId('report-name-test');
   expect(reportNameTextbox).toHaveDisplayValue('Weekly Report');
-  userEvent.clear(reportNameTextbox);
-  userEvent.type(reportNameTextbox, 'Report name text test');
+  await userEvent.clear(reportNameTextbox);
+  await userEvent.type(reportNameTextbox, 'Report name text test');
   expect(reportNameTextbox).toHaveDisplayValue('Report name text test');
 
   // ----- Report description textbox
@@ -78,7 +78,10 @@ test('inputs respond correctly', () => {
     'report-description-test',
   );
   expect(reportDescriptionTextbox).toHaveDisplayValue('');
-  userEvent.type(reportDescriptionTextbox, 'Report description text test');
+  await userEvent.type(
+    reportDescriptionTextbox,
+    'Report description text test',
+  );
   expect(reportDescriptionTextbox).toHaveDisplayValue(
     'Report description text test',
   );
@@ -88,7 +91,7 @@ test('inputs respond correctly', () => {
   expect(crontabInputs).toHaveLength(5);
 });
 
-test('does not allow user to create a report without a name', () => {
+test('does not allow user to create a report without a name', async () => {
   render(<ReportModal {...defaultProps} />, { useRedux: true });
   const reportNameTextbox = screen.getByTestId('report-name-test');
   const addButton = screen.getByRole('button', { name: /add/i });
@@ -96,7 +99,7 @@ test('does not allow user to create a report without a name', () => {
   expect(reportNameTextbox).toHaveDisplayValue('Weekly Report');
   expect(addButton).toBeEnabled();
 
-  userEvent.clear(reportNameTextbox);
+  await userEvent.clear(reportNameTextbox);
 
   expect(reportNameTextbox).toHaveDisplayValue('');
   expect(addButton).toBeDisabled();
@@ -114,7 +117,7 @@ test('creates a new email report via modal Add button', async () => {
   render(<ReportModal {...defaultProps} />, { useRedux: true });
 
   const addButton = screen.getByRole('button', { name: /add/i });
-  await waitFor(() => userEvent.click(addButton));
+  await waitFor(async () => await userEvent.click(addButton));
 
   // Verify exactly one POST to the subscribe endpoint
   await waitFor(() => {
@@ -168,7 +171,7 @@ test('non-text chart shows screenshot width and message content', () => {
   expect(screen.getByText('Screenshot width')).toBeInTheDocument();
 });
 
-test('screenshot width input preserves a typed zero instead of dropping it', () => {
+test('screenshot width input preserves a typed zero instead of dropping it', async () => {
   const lineChartProps = {
     ...defaultProps,
     dashboardId: undefined,
@@ -185,11 +188,11 @@ test('screenshot width input preserves a typed zero instead of dropping it', () 
   // The old `|| null` / `|| ''` logic silently coerced a typed 0 to null, so the
   // invalid width was swallowed instead of being submitted and surfaced by the
   // server's min-width validation. The field must preserve the literal value.
-  userEvent.type(widthInput, '0');
+  await userEvent.type(widthInput, '0');
   expect(widthInput).toHaveDisplayValue('0');
 
   // Clearing the field still yields an empty value (parsed NaN → null).
-  userEvent.clear(widthInput);
+  await userEvent.clear(widthInput);
   expect(widthInput).toHaveDisplayValue('');
 });
 
@@ -289,7 +292,7 @@ test('edit mode dispatches editReport via PUT on save', async () => {
 
   expect(screen.getByText('Edit email report')).toBeInTheDocument();
   const saveButton = screen.getByRole('button', { name: /save/i });
-  await waitFor(() => userEvent.click(saveButton));
+  await waitFor(async () => await userEvent.click(saveButton));
 
   await waitFor(() => {
     const calls = fetchMock.callHistory.calls('put-report-42');
@@ -322,7 +325,7 @@ test('submit failure dispatches danger toast and keeps modal open', async () => 
   });
 
   const addButton = screen.getByRole('button', { name: /add/i });
-  await waitFor(() => userEvent.click(addButton));
+  await waitFor(async () => await userEvent.click(addButton));
 
   // The addReport action catches 500 errors, dispatches a danger toast, and re-throws
   await waitFor(() => {

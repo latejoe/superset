@@ -77,7 +77,7 @@ test('does not render the tooltip with anchors', async () => {
       datasourceName="datasource-name"
     />,
   );
-  userEvent.hover(screen.getByRole('link', { name: 'datasource-name' }));
+  await userEvent.hover(screen.getByRole('link', { name: 'datasource-name' }));
   expect(await screen.findByRole('tooltip')).toBeInTheDocument();
   const tooltip = await screen.findByRole('tooltip');
   expect(within(tooltip).queryByRole('link')).not.toBeInTheDocument();

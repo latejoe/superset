@@ -123,8 +123,8 @@ const renderWrapper = (
   });
 };
 
-const openMenu = () => {
-  userEvent.click(screen.getByRole('button', { name: 'More Options' }));
+const openMenu = async () => {
+  await userEvent.click(screen.getByRole('button', { name: 'More Options' }));
 };
 
 const mockFullscreenElement = (getElement: () => Element | null) => {
@@ -194,8 +194,8 @@ test('Should "export to CSV"', async () => {
   renderWrapper(props);
   openMenu();
   expect(props.exportCSV).toHaveBeenCalledTimes(0);
-  userEvent.hover(screen.getByText('Download'));
-  userEvent.click(await screen.findByText('Export to .CSV'));
+  await userEvent.hover(screen.getByText('Download'));
+  await userEvent.click(await screen.findByText('Export to .CSV'));
   expect(props.exportCSV).toHaveBeenCalledTimes(1);
   expect(props.exportCSV).toHaveBeenCalledWith(371);
 });
@@ -205,8 +205,8 @@ test('Should "export to Excel"', async () => {
   renderWrapper(props);
   openMenu();
   expect(props.exportXLSX).toHaveBeenCalledTimes(0);
-  userEvent.hover(screen.getByText('Download'));
-  userEvent.click(await screen.findByText('Export to Excel'));
+  await userEvent.hover(screen.getByText('Download'));
+  await userEvent.click(await screen.findByText('Export to Excel'));
   expect(props.exportXLSX).toHaveBeenCalledTimes(1);
   expect(props.exportXLSX).toHaveBeenCalledWith(371);
 });
@@ -218,7 +218,7 @@ test('Export full CSV is under featureflag', async () => {
   const props = createProps(VizType.Table);
   renderWrapper(props);
   openMenu();
-  userEvent.hover(screen.getByText('Download'));
+  await userEvent.hover(screen.getByText('Download'));
   expect(await screen.findByText('Export to .CSV')).toBeInTheDocument();
   expect(screen.queryByText('Export to full .CSV')).not.toBeInTheDocument();
 });
@@ -231,8 +231,8 @@ test('Should "export full CSV"', async () => {
   renderWrapper(props);
   openMenu();
   expect(props.exportFullCSV).toHaveBeenCalledTimes(0);
-  userEvent.hover(screen.getByText('Download'));
-  userEvent.click(await screen.findByText('Export to full .CSV'));
+  await userEvent.hover(screen.getByText('Download'));
+  await userEvent.click(await screen.findByText('Export to full .CSV'));
   expect(props.exportFullCSV).toHaveBeenCalledTimes(1);
   expect(props.exportFullCSV).toHaveBeenCalledWith(371);
 });
@@ -243,7 +243,7 @@ test('Should not show export full CSV if report is not table', async () => {
   };
   renderWrapper();
   openMenu();
-  userEvent.hover(screen.getByText('Download'));
+  await userEvent.hover(screen.getByText('Download'));
   expect(await screen.findByText('Export to .CSV')).toBeInTheDocument();
   expect(screen.queryByText('Export to full .CSV')).not.toBeInTheDocument();
 });
@@ -255,7 +255,7 @@ test('Export full Excel is under featureflag', async () => {
   const props = createProps(VizType.Table);
   renderWrapper(props);
   openMenu();
-  userEvent.hover(screen.getByText('Download'));
+  await userEvent.hover(screen.getByText('Download'));
   expect(await screen.findByText('Export to Excel')).toBeInTheDocument();
   expect(screen.queryByText('Export to full Excel')).not.toBeInTheDocument();
 });
@@ -268,8 +268,8 @@ test('Should "export full Excel"', async () => {
   renderWrapper(props);
   openMenu();
   expect(props.exportFullXLSX).toHaveBeenCalledTimes(0);
-  userEvent.hover(screen.getByText('Download'));
-  userEvent.click(await screen.findByText('Export to full Excel'));
+  await userEvent.hover(screen.getByText('Download'));
+  await userEvent.click(await screen.findByText('Export to full Excel'));
   expect(props.exportFullXLSX).toHaveBeenCalledTimes(1);
   expect(props.exportFullXLSX).toHaveBeenCalledWith(371);
 });
@@ -280,7 +280,7 @@ test('Should not show export full Excel if report is not table', async () => {
   };
   renderWrapper();
   openMenu();
-  userEvent.hover(screen.getByText('Download'));
+  await userEvent.hover(screen.getByText('Download'));
   expect(await screen.findByText('Export to Excel')).toBeInTheDocument();
   expect(screen.queryByText('Export to full Excel')).not.toBeInTheDocument();
 });
@@ -290,8 +290,8 @@ test('Should export to pivoted Excel if report is pivot table', async () => {
   renderWrapper(props);
   openMenu();
   expect(props.exportPivotExcel).toHaveBeenCalledTimes(0);
-  userEvent.hover(screen.getByText('Download'));
-  userEvent.click(await screen.findByText('Export to Pivoted Excel'));
+  await userEvent.hover(screen.getByText('Download'));
+  await userEvent.click(await screen.findByText('Export to Pivoted Excel'));
   expect(props.exportPivotExcel).toHaveBeenCalledTimes(1);
   expect(props.exportPivotExcel).toHaveBeenCalledWith(
     '#chart-id-371 .pvtTable',
@@ -299,22 +299,22 @@ test('Should export to pivoted Excel if report is pivot table', async () => {
   );
 });
 
-test('Should "Show chart description"', () => {
+test('Should "Show chart description"', async () => {
   const props = createProps();
   renderWrapper(props);
   openMenu();
   expect(props.toggleExpandSlice).toHaveBeenCalledTimes(0);
-  userEvent.click(screen.getByText('Show chart description'));
+  await userEvent.click(screen.getByText('Show chart description'));
   expect(props.toggleExpandSlice).toHaveBeenCalledTimes(1);
   expect(props.toggleExpandSlice).toHaveBeenCalledWith(371);
 });
 
-test('Should "Force refresh"', () => {
+test('Should "Force refresh"', async () => {
   const props = createProps();
   renderWrapper(props);
   openMenu();
   expect(props.forceRefresh).toHaveBeenCalledTimes(0);
-  userEvent.click(screen.getByText('Force refresh'));
+  await userEvent.click(screen.getByText('Force refresh'));
   expect(props.forceRefresh).toHaveBeenCalledTimes(1);
   expect(props.forceRefresh).toHaveBeenCalledWith(371, 26);
   expect(props.addSuccessToast).toHaveBeenCalledTimes(1);
@@ -645,7 +645,7 @@ test('Should show "Embed code" in Share menu when feature flag is enabled and ch
   const props = createProps();
   renderWrapper(props);
   openMenu();
-  userEvent.hover(screen.getByText('Share'));
+  await userEvent.hover(screen.getByText('Share'));
   expect(await screen.findByText('Embed code')).toBeInTheDocument();
 });
 
@@ -656,7 +656,7 @@ test('Should NOT show "Embed code" in Share menu when feature flag is disabled',
   const props = createProps();
   renderWrapper(props);
   openMenu();
-  userEvent.hover(screen.getByText('Share'));
+  await userEvent.hover(screen.getByText('Share'));
   expect(
     await screen.findByText('Copy permalink to clipboard'),
   ).toBeInTheDocument();

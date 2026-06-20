@@ -204,7 +204,7 @@ test('Update component props', () => {
   expect(DeleteComponentButton).toHaveBeenCalledTimes(1);
 });
 
-test('Clicking on "DeleteComponentButton"', () => {
+test('Clicking on "DeleteComponentButton"', async () => {
   const props = createProps();
   render(<Tabs {...props} />, {
     useRedux: true,
@@ -212,14 +212,14 @@ test('Clicking on "DeleteComponentButton"', () => {
   });
 
   expect(props.deleteComponent).not.toHaveBeenCalled();
-  userEvent.click(screen.getByTestId('DeleteComponentButton'));
+  await userEvent.click(screen.getByTestId('DeleteComponentButton'));
   expect(props.deleteComponent).toHaveBeenCalledWith(
     'TABS-L-d9eyOE-b',
     'GRID_ID',
   );
 });
 
-test('Add new tab', () => {
+test('Add new tab', async () => {
   const props = createProps();
   render(<Tabs {...props} />, {
     useRedux: true,
@@ -227,7 +227,7 @@ test('Add new tab', () => {
   });
 
   expect(props.createComponent).not.toHaveBeenCalled();
-  userEvent.click(screen.getAllByRole('button', { name: 'Add tab' })[0]);
+  await userEvent.click(screen.getAllByRole('button', { name: 'Add tab' })[0]);
   expect(props.createComponent).toHaveBeenCalled();
 });
 
@@ -240,17 +240,17 @@ test('Removing a tab', async () => {
 
   expect(props.deleteComponent).not.toHaveBeenCalled();
   expect(screen.queryByText('Delete dashboard tab?')).not.toBeInTheDocument();
-  userEvent.click(screen.getAllByRole('tab', { name: 'remove' })[0]);
+  await userEvent.click(screen.getAllByRole('tab', { name: 'remove' })[0]);
   expect(props.deleteComponent).not.toHaveBeenCalled();
 
   expect(await screen.findByText('Delete dashboard tab?')).toBeInTheDocument();
 
   expect(props.deleteComponent).not.toHaveBeenCalled();
-  userEvent.click(screen.getByRole('button', { name: 'DELETE' }));
+  await userEvent.click(screen.getByRole('button', { name: 'DELETE' }));
   expect(props.deleteComponent).toHaveBeenCalled();
 });
 
-test('Switching tabs', () => {
+test('Switching tabs', async () => {
   const props = createProps();
   render(<Tabs {...props} />, {
     useRedux: true,
@@ -259,7 +259,7 @@ test('Switching tabs', () => {
 
   expect(props.logEvent).not.toHaveBeenCalled();
   expect(props.onChangeTab).not.toHaveBeenCalled();
-  userEvent.click(screen.getAllByRole('tab')[2]);
+  await userEvent.click(screen.getAllByRole('tab')[2]);
   expect(props.logEvent).toHaveBeenCalled();
   expect(props.onChangeTab).toHaveBeenCalled();
 });
@@ -273,7 +273,7 @@ test('Call "DashboardComponent.onDropOnTab"', async () => {
 
   expect(props.logEvent).not.toHaveBeenCalled();
   expect(props.onChangeTab).not.toHaveBeenCalled();
-  userEvent.click(screen.getAllByText('DashboardComponent')[0]);
+  await userEvent.click(screen.getAllByText('DashboardComponent')[0]);
 
   await waitFor(() => {
     expect(props.logEvent).toHaveBeenCalled();

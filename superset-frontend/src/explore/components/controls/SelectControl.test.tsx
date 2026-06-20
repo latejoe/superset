@@ -95,7 +95,7 @@ describe('SelectControl', () => {
       expect(selectorInput).toBeInTheDocument();
     });
 
-    test('renders as mode multiple', () => {
+    test('renders as mode multiple', async () => {
       renderSelectControl({ multi: true });
       const selectorWrapper = screen.getByLabelText('Row Limit', {
         selector: 'div',
@@ -106,11 +106,11 @@ describe('SelectControl', () => {
       );
       expect(selectorWrapper).toBeInTheDocument();
       expect(selectorInput).toBeInTheDocument();
-      userEvent.click(selectorInput);
+      await userEvent.click(selectorInput);
       expect(screen.getByText('Select all (3)')).toBeInTheDocument();
     });
 
-    test('renders with allowNewOptions when freeForm', () => {
+    test('renders with allowNewOptions when freeForm', async () => {
       renderSelectControl({ freeForm: true });
       const selectorWrapper = screen.getByLabelText('Row Limit', {
         selector: 'div',
@@ -123,15 +123,15 @@ describe('SelectControl', () => {
       expect(selectorInput).toBeInTheDocument();
 
       // Expect a new option to be selectable.
-      userEvent.click(selectorInput);
-      userEvent.type(selectorInput, 'a new option');
+      await userEvent.click(selectorInput);
+      await userEvent.type(selectorInput, 'a new option');
       act(() => jest.runAllTimers());
       expect(within(selectorWrapper).getByRole('option')).toHaveTextContent(
         'a new option',
       );
     });
 
-    test('renders with allowNewOptions=false when freeForm=false', () => {
+    test('renders with allowNewOptions=false when freeForm=false', async () => {
       const container = renderSelectControl({ freeForm: false });
       const selectorWrapper = screen.getByLabelText('Row Limit', {
         selector: 'div',
@@ -144,8 +144,8 @@ describe('SelectControl', () => {
       expect(selectorInput).toBeInTheDocument();
 
       // Expect no new option to be selectable.
-      userEvent.click(selectorInput);
-      userEvent.type(selectorInput, 'a new option');
+      await userEvent.click(selectorInput);
+      await userEvent.type(selectorInput, 'a new option');
       act(() => jest.advanceTimersByTime(300));
 
       expect(
@@ -156,7 +156,7 @@ describe('SelectControl', () => {
       ).toBeInTheDocument();
     });
 
-    test('renders with tokenSeparators', () => {
+    test('renders with tokenSeparators', async () => {
       renderSelectControl({ tokenSeparators: ['\n', '\t', ';'], multi: true });
       const selectorWrapper = screen.getByLabelText('Row Limit', {
         selector: 'div',
@@ -168,7 +168,7 @@ describe('SelectControl', () => {
       expect(selectorWrapper).toBeInTheDocument();
       expect(selectorInput).toBeInTheDocument();
 
-      userEvent.click(selectorInput);
+      await userEvent.click(selectorInput);
       const paste = createEvent.paste(selectorInput, {
         clipboardData: {
           getData: () => '1 year ago;1 week ago',

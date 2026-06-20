@@ -151,9 +151,9 @@ const metricProps = {
   onChange: jest.fn(),
 };
 
-const search = (value: string, input: HTMLElement) => {
-  userEvent.clear(input);
-  userEvent.type(input, value);
+const search = async (value: string, input: HTMLElement) => {
+  await userEvent.clear(input);
+  await userEvent.type(input, value);
 };
 
 test('should render', async () => {
@@ -389,7 +389,7 @@ test('Renders with custom folders', () => {
   expect(screen.getAllByTestId('datasource-panel-divider').length).toEqual(3);
 });
 
-test('Collapse folders', () => {
+test('Collapse folders', async () => {
   render(
     <ExploreContainer>
       <DatasourcePanel {...propsWithFolders} />
@@ -401,7 +401,7 @@ test('Collapse folders', () => {
     },
   );
 
-  userEvent.click(screen.getByText('Test folder'));
+  await userEvent.click(screen.getByText('Test folder'));
 
   expect(screen.getByText('Test folder')).toBeInTheDocument();
   expect(screen.queryByText('Test nested folder')).not.toBeInTheDocument();
@@ -411,7 +411,7 @@ test('Collapse folders', () => {
 
   expect(screen.queryByText(metrics[0].metric_name)).not.toBeInTheDocument();
 
-  userEvent.click(screen.getByText('Test folder'));
+  await userEvent.click(screen.getByText('Test folder'));
 
   expect(screen.getByText('Test folder')).toBeInTheDocument();
   expect(screen.getByText('Test nested folder')).toBeInTheDocument();

@@ -336,9 +336,9 @@ describe('PropertiesModal', () => {
     ).toBeInTheDocument();
 
     expect(props.onHide).not.toHaveBeenCalled();
-    userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(props.onHide).toHaveBeenCalledTimes(1);
-    userEvent.click(screen.getByRole('button', { name: 'Close' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(props.onHide).toHaveBeenCalledTimes(2);
   });
 
@@ -378,7 +378,7 @@ describe('PropertiesModal', () => {
     expect(props.onHide).not.toHaveBeenCalled();
     expect(props.onSubmit).not.toHaveBeenCalled();
 
-    userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
     await waitFor(() => {
       expect(props.onSubmit).toHaveBeenCalledTimes(1);
       // Just check that onSubmit was called with the basic fields
@@ -413,7 +413,7 @@ describe('PropertiesModal', () => {
     expect(props.onHide).not.toHaveBeenCalled();
     expect(props.onSubmit).not.toHaveBeenCalled();
 
-    userEvent.click(screen.getByRole('button', { name: 'Apply' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }));
     await waitFor(() => {
       expect(props.onSubmit).toHaveBeenCalledTimes(1);
     });
@@ -440,7 +440,7 @@ describe('PropertiesModal', () => {
       await screen.findByTestId('dashboard-edit-properties-form'),
     ).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Apply' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }));
     await waitFor(() => {
       expect(props.onSubmit).toHaveBeenCalledTimes(1);
       const submitCall = props.onSubmit.mock.calls[0][0];
@@ -476,7 +476,7 @@ describe('PropertiesModal', () => {
       await screen.findByTestId('dashboard-edit-properties-form'),
     ).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Apply' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }));
     await waitFor(() => {
       expect(props.onSubmit).toHaveBeenCalledTimes(1);
       const submitCall = props.onSubmit.mock.calls[0][0];
@@ -525,7 +525,7 @@ describe('PropertiesModal', () => {
     const propsWithDashboardInfo = { ...props, dashboardInfo };
 
     const getSelect = () => screen.getByRole('combobox', { name: t('Roles') });
-    const open = () => waitFor(() => userEvent.click(getSelect()));
+    const open = () => waitFor(async () => await userEvent.click(getSelect()));
 
     const getElementsByClassName = (className: string) =>
       document.querySelectorAll(className)! as NodeListOf<HTMLElement>;
@@ -583,7 +583,7 @@ describe('PropertiesModal', () => {
     const propsWithDashboardInfo = { ...props, dashboardInfo };
 
     const getSelect = () => screen.getByRole('combobox', { name: t('Owners') });
-    const open = () => waitFor(() => userEvent.click(getSelect()));
+    const open = () => waitFor(async () => await userEvent.click(getSelect()));
 
     const getElementsByClassName = (className: string) =>
       document.querySelectorAll(className)! as NodeListOf<HTMLElement>;
@@ -639,7 +639,7 @@ describe('PropertiesModal', () => {
     const propsWithDashboardInfo = { ...props, dashboardInfo };
 
     const getSelect = () => screen.getByRole('combobox', { name: t('Owners') });
-    const open = () => waitFor(() => userEvent.click(getSelect()));
+    const open = () => waitFor(async () => await userEvent.click(getSelect()));
     const getElementsByClassName = (className: string) =>
       document.querySelectorAll(className)! as NodeListOf<HTMLElement>;
 
@@ -778,7 +778,7 @@ describe('PropertiesModal', () => {
     const titleInput = screen.getAllByRole('textbox')[0];
 
     // Clear to trigger validation error
-    userEvent.clear(titleInput);
+    await userEvent.clear(titleInput);
     await waitFor(
       () => {
         expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
@@ -787,7 +787,7 @@ describe('PropertiesModal', () => {
     );
 
     // Re-enter valid title to clear error
-    userEvent.type(titleInput, 'New Dashboard Title');
+    await userEvent.type(titleInput, 'New Dashboard Title');
     await waitFor(
       () => {
         expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled();

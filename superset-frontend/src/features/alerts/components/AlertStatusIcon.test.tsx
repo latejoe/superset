@@ -61,7 +61,7 @@ test('renders the neutral calendar icon for an unknown/never-run state', () => {
 
 test('labels the Not triggered state "Report not yet run" for reports', async () => {
   renderIcon(AlertState.Noop, /* isReportEnabled */ true);
-  userEvent.hover(screen.getByRole('img'));
+  await userEvent.hover(screen.getByRole('img'));
   expect(await screen.findByText('Report not yet run')).toBeInTheDocument();
   // Guards the isReportEnabled split: before this fix the Noop label was
   // unconditionally "Nothing triggered" for reports too.
@@ -70,6 +70,6 @@ test('labels the Not triggered state "Report not yet run" for reports', async ()
 
 test('labels the Not triggered state "Nothing triggered" for alerts', async () => {
   renderIcon(AlertState.Noop, /* isReportEnabled */ false);
-  userEvent.hover(screen.getByRole('img'));
+  await userEvent.hover(screen.getByRole('img'));
   expect(await screen.findByText('Nothing triggered')).toBeInTheDocument();
 });

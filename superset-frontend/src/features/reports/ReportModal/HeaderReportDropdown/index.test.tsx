@@ -168,7 +168,7 @@ describe('Header Report Dropdown', () => {
       setup(mockedProps, stateWithUserAndReport);
     });
     const editModal = await screen.findByText('Edit email report');
-    userEvent.click(editModal);
+    await userEvent.click(editModal);
     expect(mockedProps.showReportModal).toHaveBeenCalled();
   });
 
@@ -179,7 +179,7 @@ describe('Header Report Dropdown', () => {
       setup(mockedProps, stateWithUserAndReport);
     });
     const deleteModal = await screen.findByText('Delete email report');
-    userEvent.click(deleteModal);
+    await userEvent.click(deleteModal);
     expect(mockedProps.setCurrentReportDeleting).toHaveBeenCalled();
   });
 
@@ -209,20 +209,20 @@ describe('Header Report Dropdown', () => {
     act(() => {
       setup(mockedProps, stateWithNonAdminUser);
     });
-    userEvent.click(screen.getByRole('menuitem'));
+    await userEvent.click(screen.getByRole('menuitem'));
     expect(
       await screen.findByText('Set up an email report'),
     ).toBeInTheDocument();
   });
 
-  test('do not render Schedule Email Reports if user no permission', () => {
+  test('do not render Schedule Email Reports if user no permission', async () => {
     const mockedProps = createProps();
 
     act(() => {
       setup(mockedProps, stateWithNonMenuAccessOnManage);
     });
 
-    userEvent.click(screen.getByRole('menu'));
+    await userEvent.click(screen.getByRole('menu'));
     expect(
       screen.queryByText('Set up an email report'),
     ).not.toBeInTheDocument();
