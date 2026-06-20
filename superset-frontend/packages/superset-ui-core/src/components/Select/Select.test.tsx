@@ -108,7 +108,7 @@ const findAllSelectOptions = () =>
   waitFor(() => getElementsByClassName('.ant-select-item-option-content'));
 
 const findSelectValue = () =>
-  waitFor(() => getElementByClassName('.ant-select-selection-item'));
+  waitFor(() => getElementByClassName('.ant-select-content-has-value'));
 
 const findAllSelectValues = () =>
   waitFor(() => [...getElementsByClassName('.ant-select-selection-item')]);
@@ -363,7 +363,7 @@ test('searches for custom fields', async () => {
 
 test('removes duplicated values', async () => {
   render(<Select {...defaultProps} mode="multiple" allowNewOptions />);
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => 'a,b,b,b,c,d,d',
@@ -443,8 +443,7 @@ test('adds the null option when selected in single mode', async () => {
   render(<Select {...defaultProps} options={[OPTIONS[0], NULL_OPTION]} />);
   await open();
   await userEvent.click(await findSelectOption(NULL_OPTION.label));
-  const values = await findAllSelectValues();
-  expect(values[0]).toHaveTextContent(NULL_OPTION.label);
+  expect(await findSelectValue()).toHaveTextContent(NULL_OPTION.label);
 });
 
 test('adds the null option when selected in multiple mode', async () => {
@@ -760,7 +759,7 @@ test('Renders only an overflow tag if dropdown is open in oneLine mode', async (
   );
   await open();
 
-  const withinSelector = within(getElementByClassName('.ant-select-selector'));
+  const withinSelector = within(getElementByClassName('.ant-select-content'));
   await waitFor(() => {
     expect(
       withinSelector.queryByText(OPTIONS[0].label),
@@ -793,7 +792,7 @@ test('Maintains stable maxTagCount to prevent click target disappearing in oneLi
     />,
   );
 
-  const withinSelector = within(getElementByClassName('.ant-select-selector'));
+  const withinSelector = within(getElementByClassName('.ant-select-content'));
   expect(withinSelector.getByText(OPTIONS[0].label)).toBeVisible();
   expect(withinSelector.getByText('+ 2 ...')).toBeVisible();
 
@@ -830,9 +829,7 @@ test('dropdown width matches input width after tags collapse in oneLine mode', a
 
   // Wait for RAF to complete and tags to collapse
   await waitFor(() => {
-    const withinSelector = within(
-      getElementByClassName('.ant-select-selector'),
-    );
+    const withinSelector = within(getElementByClassName('.ant-select-content'));
     expect(
       withinSelector.queryByText(OPTIONS[0].label),
     ).not.toBeInTheDocument();
@@ -958,20 +955,22 @@ test('"Select all" does not affect disabled options', async () => {
   );
   await open();
 
+  const selectContainer = getElementByClassName('.ant-select-content');
+
   // We have 2 options disabled but one is selected initially
-  expect(await findSelectValue()).toHaveTextContent(options[0].label);
-  expect(await findSelectValue()).not.toHaveTextContent(options[1].label);
+  expect(selectContainer).toHaveTextContent(options[0].label);
+  expect(selectContainer).not.toHaveTextContent(options[1].label);
 
   // Checking Select all shouldn't affect the disabled options
   const selectAll = selectAllButtonText(OPTIONS.length - 1);
   await userEvent.click(await screen.findByText(selectAll));
-  expect(await findSelectValue()).toHaveTextContent(options[0].label);
-  expect(await findSelectValue()).not.toHaveTextContent(options[1].label);
+  expect(selectContainer).toHaveTextContent(options[0].label);
+  expect(selectContainer).not.toHaveTextContent(options[1].label);
 
   // Unchecking Select all shouldn't affect the disabled options
   await userEvent.click(await screen.findByText(selectAll));
-  expect(await findSelectValue()).toHaveTextContent(options[0].label);
-  expect(await findSelectValue()).not.toHaveTextContent(options[1].label);
+  expect(selectContainer).toHaveTextContent(options[0].label);
+  expect(selectContainer).not.toHaveTextContent(options[1].label);
 });
 
 test('abbreviates large numbers in bulk action buttons', async () => {
@@ -1068,7 +1067,7 @@ test('fires onChange when pasting a selection', async () => {
   const onChange = jest.fn();
   render(<Select {...defaultProps} onChange={onChange} />);
   await open();
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => OPTIONS[0].label,
@@ -1096,7 +1095,7 @@ test('does not duplicate options when using numeric values', async () => {
 test('pasting an existing option does not duplicate it', async () => {
   render(<Select {...defaultProps} options={[OPTIONS[0]]} />);
   await open();
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => OPTIONS[0].label,
@@ -1122,7 +1121,7 @@ test('pasting an existing option does not duplicate it in multiple mode', async 
     />,
   );
   await open();
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => 'John,Liam,Peter',
@@ -1136,7 +1135,7 @@ test('pasting an existing option does not duplicate it in multiple mode', async 
 test('pasting an non-existent option should not add it if allowNewOptions is false', async () => {
   render(<Select {...defaultProps} options={[]} allowNewOptions={false} />);
   await open();
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => 'John',

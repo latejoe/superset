@@ -275,8 +275,8 @@ export const CustomizationsBadge = ({ chartId }: CustomizationsBadgeProps) => {
   return (
     <Tooltip
       title={tooltipContent}
-      visible={tooltipVisible}
-      onVisibleChange={setTooltipVisible}
+      open={tooltipVisible}
+      onOpenChange={setTooltipVisible}
       placement="bottom"
       overlayStyle={{
         color: theme.colorText,

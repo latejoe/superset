@@ -141,7 +141,7 @@ export const sortComparatorForNoSearchHelper = (
 // Select component will create a new component
 export const getSuffixIcon = (
   isLoading: boolean | undefined,
-  showSearch: boolean,
+  showSearch: boolean | object,
   isDropdownVisible: boolean,
 ) => {
   if (isLoading) {

@@ -1973,9 +1973,13 @@ describe('plugin-chart-table', () => {
           }),
         );
 
-        const arrow = container.querySelector(
-          '.dt-select-page-size .ant-select .ant-select-arrow',
-        );
+        const arrow =
+          container.querySelector(
+            '.dt-select-page-size .ant-select .ant-select-suffix',
+          ) ||
+          container.querySelector(
+            '.dt-select-page-size .ant-select .ant-select-arrow',
+          );
         expect(arrow).not.toBeNull();
         expect(getComputedStyle(arrow as HTMLElement).zIndex).toBe('11');
       });

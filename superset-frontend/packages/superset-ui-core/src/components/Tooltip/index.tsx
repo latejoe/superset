@@ -27,7 +27,7 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>(
     <AntdTooltip
       ref={ref}
       styles={{
-        body: { overflow: 'hidden', textOverflow: 'ellipsis' },
+        container: { overflow: 'hidden', textOverflow: 'ellipsis' },
         root: overlayStyle ?? {},
       }}
       {...props}

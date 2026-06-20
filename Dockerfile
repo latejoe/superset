@@ -60,7 +60,8 @@ RUN mkdir -p /app/superset/static/assets \
 ENV npm_config_fetch_retries=5 \
     npm_config_fetch_retry_mintimeout=20000 \
     npm_config_fetch_retry_maxtimeout=120000 \
-    npm_config_fetch_timeout=600000
+    npm_config_fetch_timeout=600000 \
+    npm_config_legacy_peer_deps=true
 
 # Mount package files and install dependencies if not in dev mode
 # NOTE: we mount packages and plugins as they are referenced in package.json as workspaces

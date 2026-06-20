@@ -361,7 +361,7 @@ export const DropdownContainer = forwardRef(
 
             <Popover
               styles={{
-                body: {
+                content: {
                   maxHeight: `${MAX_HEIGHT}px`,
                   overflow: showOverflow ? 'auto' : 'visible',
                 },

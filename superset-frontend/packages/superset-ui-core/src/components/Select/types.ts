@@ -65,13 +65,11 @@ export type AntdExposedProps = Pick<
   | 'onOpenChange'
   | 'optionRender'
   | 'placeholder'
-  | 'showArrow'
   | 'showSearch'
   | 'tokenSeparators'
   | 'virtual'
   | 'getPopupContainer'
   | 'menuItemSelectedIcon'
-  | 'dropdownAlign'
 >;
 
 export type SelectOptionsType = Exclude<AntdProps['options'], undefined>;

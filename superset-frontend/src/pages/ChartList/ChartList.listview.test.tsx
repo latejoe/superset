@@ -225,7 +225,13 @@ test('sorts table when clicking column headers', async () => {
 
   const table = screen.getByTestId('listview-table');
 
-  const allHeaders = table.querySelectorAll('.ant-table-column-sorters');
+  // In antd v6, the Table may render column sorters in both the regular
+  // thead and a sticky/fixed header. Only count unique headers from the
+  // first thead to avoid counting duplicates.
+  const thead = table.querySelector('.ant-table-thead');
+  const allHeaders = thead
+    ? thead.querySelectorAll('.ant-table-column-sorters')
+    : table.querySelectorAll('.ant-table-column-sorters');
 
   const sortableHeaders = Array.from(allHeaders).filter(
     header => !header.closest('.ant-table-measure-cell-content'),

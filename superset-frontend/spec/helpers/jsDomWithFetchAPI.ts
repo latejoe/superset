@@ -65,11 +65,30 @@ export default class FixJSDOMEnvironment extends JSDOMEnvironment {
     this.global.AbortController = AbortController;
     this.global.ReadableStream = ReadableStream;
 
-    // Mock MessageChannel to prevent hanging Jest tests with rc-overflow@1.4.1
-    // Forces rc-overflow to use requestAnimationFrame fallback instead
-    // Can be removed when rc-overflow properly cleans up MessagePorts in test environments
-    // See: https://github.com/apache/superset/pull/34871
-    this.global.MessageChannel = undefined as any;
-    this.global.MessagePort = undefined as any;
+    // Provide an async MessageChannel stub so rc-component packages
+    // (overflow, select, form) work in Jest without hanging.
+    // antd v6 rc-* components call new MessageChannel() unconditionally;
+    // the old workaround of setting it to undefined no longer works.
+    // The callback must fire asynchronously (like real MessageChannel)
+    // so that rc-component/overflow's batcher accumulates all updates
+    // before flushing.
+    this.global.MessageChannel = class {
+      port1: any;
+      port2: any;
+      constructor() {
+        this.port1 = { onmessage: null, close() {} };
+        this.port2 = {
+          postMessage: () => {
+            Promise.resolve().then(() => {
+              if (this.port1.onmessage) {
+                this.port1.onmessage({ data: undefined } as any);
+              }
+            });
+          },
+          close() {},
+        };
+      }
+    } as any;
+    this.global.MessagePort = class {} as any;
   }
 }

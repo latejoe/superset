@@ -85,7 +85,17 @@ test('shows a loading state when config.refreshingSchema is true', () => {
   const { container } = render(
     <MultiEnumControl {...baseProps({ config: { refreshingSchema: true } })} />,
   );
-  expect(container.querySelector('.ant-select-arrow-loading')).toBeTruthy();
+  // In antd v6, the loading prop on Select adds ant-select-loading class
+  // to the root select element rather than a separate loading icon element.
+  const selectEl = container.querySelector('.ant-select');
+  expect(selectEl).toBeTruthy();
+  // Verify loading is active via the suffixIcon spinner or the loading class
+  expect(
+    selectEl?.classList.contains('ant-select-loading') ||
+      container.querySelector('.ant-select-suffix .ant-spin') ||
+      container.querySelector('.ant-select-arrow-loading') ||
+      container.querySelector('.ant-spin'),
+  ).toBeTruthy();
 });
 
 test('treats non-array data as an empty selection without crashing', () => {

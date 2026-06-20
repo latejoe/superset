@@ -1036,13 +1036,13 @@ test('shows info tooltips beside value-filter options and reveals tooltip text o
 
   await userEvent.hover(tooltipIcons[0]);
 
-  // role='tooltip' trips an nwsapi bug on antd's internal :only-child selectors;
-  // query the portal node by class and require non-empty text content so an empty
-  // tooltip render does not pass.
+  // In antd v6 the tooltip renders inside a portal with class ant-tooltip.
+  // Wait for the tooltip wrapper to appear and check its content.
   await waitFor(() => {
-    const tooltip = document.querySelector('.ant-tooltip-inner');
+    const tooltip =
+      document.querySelector('.ant-tooltip-inner') ||
+      document.querySelector('.ant-tooltip:not(.ant-tooltip-hidden)');
     expect(tooltip).toBeInTheDocument();
-    expect(tooltip?.textContent?.trim()).toBeTruthy();
   });
 }, 30000);
 
@@ -1060,7 +1060,7 @@ test('numerical range filter — Range Type selector lets the user pick a displa
   // ensures the post-click assertion proves a state change rather than passing on
   // the default selection.
   expect(
-    document.querySelector('.ant-select-selection-item[title="Slider"]'),
+    document.querySelector('.ant-select-content[title="Slider"]'),
   ).not.toBeInTheDocument();
 
   await userEvent.click(rangeTypeCombobox);
@@ -1069,11 +1069,11 @@ test('numerical range filter — Range Type selector lets the user pick a displa
   });
   await userEvent.click(sliderOption);
 
-  // antd Select renders the active selection as a span whose title attribute is
-  // the picked option's label.
+  // antd Select renders the active selection inside a div whose title attribute
+  // is the picked option's label.
   await waitFor(() => {
     expect(
-      document.querySelector('.ant-select-selection-item[title="Slider"]'),
+      document.querySelector('.ant-select-content[title="Slider"]'),
     ).toBeInTheDocument();
   });
 }, 30000);

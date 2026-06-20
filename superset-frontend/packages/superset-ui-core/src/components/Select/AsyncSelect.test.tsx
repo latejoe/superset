@@ -119,7 +119,7 @@ const findAllSelectOptions = () =>
   waitFor(() => getElementsByClassName('.ant-select-item-option-content'));
 
 const findSelectValue = () =>
-  waitFor(() => getElementByClassName('.ant-select-selection-item'));
+  waitFor(() => getElementByClassName('.ant-select-content-has-value'));
 
 const findAllSelectValues = () =>
   waitFor(() => getElementsByClassName('.ant-select-selection-item'));
@@ -381,7 +381,7 @@ test('searches for custom fields', async () => {
 
 test('removes duplicated values', async () => {
   render(<AsyncSelect {...defaultProps} mode="multiple" allowNewOptions />);
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => 'a,b,b,b,c,d,d',
@@ -473,8 +473,8 @@ test('adds the null option when selected in single mode', async () => {
   render(<AsyncSelect {...defaultProps} options={loadOptions} />);
   await open();
   await userEvent.click(await findSelectOption(NULL_OPTION.label));
-  const values = await findAllSelectValues();
-  expect(values[0]).toHaveTextContent(NULL_OPTION.label);
+  const value = await findSelectValue();
+  expect(value).toHaveTextContent(NULL_OPTION.label);
 });
 
 test('adds the null option when selected in multiple mode', async () => {
@@ -814,7 +814,7 @@ test('Renders only an overflow tag if dropdown is open in oneLine mode', async (
   );
   await open();
 
-  const withinSelector = within(getElementByClassName('.ant-select-selector'));
+  const withinSelector = within(getElementByClassName('.ant-select-content'));
   await waitFor(() => {
     expect(
       withinSelector.queryByText(OPTIONS[0].label),
@@ -887,7 +887,7 @@ test('fires onChange when pasting a selection', async () => {
   const onChange = jest.fn();
   render(<AsyncSelect {...defaultProps} onChange={onChange} />);
   await open();
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => OPTIONS[0].label,
@@ -1164,7 +1164,10 @@ test('keeps loading indicator while a newer request is in flight after a stale r
   });
 
   const isSpinnerVisible = (): boolean =>
-    Boolean(document.querySelector('.ant-select-arrow .ant-spin'));
+    Boolean(
+      document.querySelector('.ant-select-suffix .ant-spin') ||
+      document.querySelector('.ant-select-arrow .ant-spin'),
+    );
 
   try {
     render(<AsyncSelect {...defaultProps} options={loadOptions} />);
@@ -1312,7 +1315,10 @@ test('appends page>1 results during an active search and discards them when sear
   // Wait for loading to finish so handlePagination's `!isLoading` gate is
   // open before we fire scroll.
   await waitFor(() =>
-    expect(document.querySelector('.ant-select-arrow .ant-spin')).toBeNull(),
+    expect(
+      document.querySelector('.ant-select-suffix .ant-spin') ||
+        document.querySelector('.ant-select-arrow .ant-spin'),
+    ).toBeNull(),
   );
 
   // Trigger pagination by dispatching a scroll event on the virtual-list
@@ -1392,7 +1398,7 @@ test('pasting an existing option does not duplicate it', async () => {
   }));
   render(<AsyncSelect {...defaultProps} options={options} />);
   await open();
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => OPTIONS[0].label,
@@ -1420,7 +1426,7 @@ test('pasting an existing option does not duplicate it in multiple mode', async 
     />,
   );
   await open();
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => 'John,Liam,Peter',
@@ -1442,7 +1448,7 @@ test('pasting an non-existent option should not add it if allowNewOptions is fal
     />,
   );
   await open();
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const paste = createEvent.paste(input, {
     clipboardData: {
       getData: () => 'John',
@@ -1456,7 +1462,7 @@ test('onChange is called with the value property when pasting an option that was
   const onChange = jest.fn();
   render(<AsyncSelect {...defaultProps} onChange={onChange} />);
   await open();
-  const input = getElementByClassName('.ant-select-selection-search-input');
+  const input = getElementByClassName('.ant-select-input');
   const lastOption = OPTIONS[OPTIONS.length - 1];
   const paste = createEvent.paste(input, {
     clipboardData: {
