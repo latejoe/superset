@@ -101,7 +101,9 @@ describe('CountryMap (d3 v7 modular)', () => {
     expect(mockD3Json).toHaveBeenCalledTimes(1);
 
     // Wait for the promise to resolve
-    await new Promise(resolve => { setTimeout(resolve, 0); });
+    await new Promise(resolve => {
+      setTimeout(resolve, 0);
+    });
 
     const region = document.querySelector('path.region');
     expect(region).not.toBeNull();
@@ -122,7 +124,9 @@ describe('CountryMap (d3 v7 modular)', () => {
       />,
     );
 
-    await new Promise(resolve => { setTimeout(resolve, 0); });
+    await new Promise(resolve => {
+      setTimeout(resolve, 0);
+    });
 
     const region = document.querySelector('path.region');
     expect(region).not.toBeNull();
